@@ -1,6 +1,7 @@
 package com.banquito.core.baking.cuenta.domain;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -26,14 +27,14 @@ public class CuentaIntervinientes {
 
     @Column(name = "FECHA_FIN", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaFin;
+    private Date fechaFin;
 
     @Column(name = "ESTADO", nullable = false, length = 3)
     private String estado;
 
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaUltimoCambio;
+    private Date fechaUltimoCambio;
 
     @Version
     private Long version;
@@ -69,5 +70,9 @@ public class CuentaIntervinientes {
             return false;
         return true;
     }
+
+    
+
+    
 
 }

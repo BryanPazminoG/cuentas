@@ -1,14 +1,21 @@
 package com.banquito.core.baking.cuenta.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.banquito.core.baking.cuenta.dao.TipoCuentaRepository;
 import com.banquito.core.baking.cuenta.domain.TipoCuenta;
+import com.banquito.core.baking.cuenta.dto.TipoCuentaBuilder;
+import com.banquito.core.baking.cuenta.dto.TipoCuentaDTO;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class TipoCuentaService {
     private final TipoCuentaRepository tipoCuentaRepository;
@@ -17,53 +24,65 @@ public class TipoCuentaService {
         this.tipoCuentaRepository = tipoCuentaRepository;
     }
 
-    public Optional<TipoCuenta> getById(String codTipoCuenta) {
-        
-        return this.tipoCuentaRepository.findById(codTipoCuenta);
-
+    public TipoCuentaDTO obtenerPorId(String codTipoCuenta) {
+        log.info("Obteniendo tipo de cuenta con ID: {}", codTipoCuenta);
+        Optional<TipoCuenta> optTipoCuenta = this.tipoCuentaRepository.findById(codTipoCuenta);
+        if (optTipoCuenta.isPresent()) {
+            log.info("Tipo de cuenta obtenido: {}", optTipoCuenta.get());
+            return TipoCuentaBuilder.toDTO(optTipoCuenta.get());
+        } else {
+            throw new RuntimeException("No se encontro el tipo de cuenta con ID: " + codTipoCuenta);
+        }
     }
-    public Iterable<TipoCuenta> listAll() {
-        return this.tipoCuentaRepository.findAll();
+    
+    public List<TipoCuentaDTO> listarTodo() {
+        log.info("Se va a obtener todos los tipos de cuentas");
+        List<TipoCuentaDTO> dtos = new ArrayList<>();
+        for (TipoCuenta tipoCuenta : this.tipoCuentaRepository.findAll()) {
+            dtos.add(TipoCuentaBuilder.toDTO(tipoCuenta));
+        }
+        return dtos;
     }
 
     @Transactional
-    public TipoCuenta create(TipoCuenta tipoCuenta) {
+    public void crear(TipoCuentaDTO dto) {
         try {
-
-            return this.tipoCuentaRepository.save(tipoCuenta);
-
+            TipoCuenta tipoCuenta = TipoCuentaBuilder.toTipoCuenta(dto);
+            tipoCuenta.setFechaCreacion(new Date());
+            this.tipoCuentaRepository.save(tipoCuenta);
+            log.info("Se creo el tipo de cuenta: {}", tipoCuenta);
         } catch (Exception e) {
-            // TODO: handle exception
-            throw new CreacionException("Error en creacion del Tipo de Cuenta: " + tipoCuenta + ", Error: " + e, e);
+
+            throw new CreacionException("Error al crear tipo de cuenta: ", e);
         }
     }
 
-    public TipoCuenta update(TipoCuenta tipoCuentaUpdate) {
+    @Transactional
+    public void actualizar(TipoCuentaDTO dto) {
         try {
-            Optional<TipoCuenta> tipoCuenta = getById(tipoCuentaUpdate.getCodTipoCuenta());
-            if (tipoCuenta.isPresent()) {
-                return create(tipoCuentaUpdate);
-            } else {
-                throw new RuntimeException(
-                        "El tipo de cuenta con id" + tipoCuentaUpdate.getCodTipoCuenta() + " no existe");
-            }
+            TipoCuenta tipoAux = this.tipoCuentaRepository.findById(dto.getCodTipoCuenta()).get();
+            TipoCuenta tipoCuentaTmp = TipoCuentaBuilder.toTipoCuenta(dto);
+            TipoCuenta tipoCuenta = TipoCuentaBuilder.copyTipoCuenta(tipoCuentaTmp, tipoAux);
+            tipoCuenta.setFechaUltimoCambio(new Date());
+            this.tipoCuentaRepository.save(tipoCuenta);
+            log.info("Se actualizaron los datos del tipo de cuenta: {}", tipoCuenta);
         } catch (Exception e) {
-            throw new CreacionException("Ocurrio un error al actualizar el Tipo de cuenta, error: " + e.getMessage(),
-                    e);
+            throw new RuntimeException("Error al actualizar tipo de cuenta.", e);
         }
     }
 
-    public void delete(String id) {
+    @Transactional
+    public void eliminar(String id) {
         try {
-            Optional<TipoCuenta> tipoCuenta = getById(id);
+            Optional<TipoCuenta> tipoCuenta = this.tipoCuentaRepository.findById(id);
             if (tipoCuenta.isPresent()) {
                 this.tipoCuentaRepository.delete(tipoCuenta.get());
+                log.info("Se elimino con exito el tipo de cuenta: {}", tipoCuenta);
             } else {
-                throw new RuntimeException("El tipo de cuenta con el id" + id + " no existe");
+                throw new RuntimeException("El tipo de cuenta con ID: " + id + " no existe");
             }
         } catch (Exception e) {
             throw new CreacionException("Ocurrio un error al eliminar el tipo de cuenta, error: " + e.getMessage(), e);
-
         }
     }
 }

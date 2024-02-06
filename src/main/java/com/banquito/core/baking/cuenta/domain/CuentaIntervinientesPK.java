@@ -24,6 +24,4 @@ public class CuentaIntervinientesPK implements Serializable {
         this.codCuenta = codCuenta;
         this.codClientePersona = codClientePersona;
     }
-    
-    
 }
