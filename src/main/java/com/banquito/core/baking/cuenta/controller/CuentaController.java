@@ -105,7 +105,7 @@ public class CuentaController {
         }
     }
     
-    @GetMapping("/obtenerCuentasCliente/{codCliente}")
+    @GetMapping("/clientes/{codCliente}")
     public ResponseEntity<List<CuentaDTO>> obtenerCuentasCliente(@PathVariable(name = "codCliente") String codCliente) {
         try {
             List<CuentaDTO> cuentasDTO = this.cuentaService.obtenerCuentasCliente(codCliente);

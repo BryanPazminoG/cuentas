@@ -11,7 +11,6 @@ import com.banquito.core.baking.cuenta.dao.TarjetaRepository;
 import com.banquito.core.baking.cuenta.domain.Tarjeta;
 import com.banquito.core.baking.cuenta.dto.TarjetaBuilder;
 import com.banquito.core.baking.cuenta.dto.TarjetaDTO;
-
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +34,7 @@ public class TarjetaService {
 
     public TarjetaDTO obtenerPorId(Integer codTarjeta) {
 
-        log.info("Obtener la cuenta");
+        log.info("Obtener la tarjeta");
         Tarjeta tarjeta = this.tarjetaRepository.findById(codTarjeta).get();
         log.info("Se ha obtenido la tarjeta {}",tarjeta);
         
@@ -48,6 +47,7 @@ public class TarjetaService {
 
             Tarjeta tarjeta=TarjetaBuilder.toTarjeta(dto);
             tarjeta.setFechaEmision(Timestamp.from(Instant.now()));
+            tarjeta.setFechaUltimoCambio(Timestamp.from(Instant.now()));
             tarjeta.setEstado("ACT");
             return this.tarjetaRepository.save(tarjeta);
 
@@ -60,7 +60,7 @@ public class TarjetaService {
 @Transactional
     public void actualizar(TarjetaDTO dto) {
         try {
-            Tarjeta tarjetaAux = this.tarjetaRepository.findById(dto.getCodCuenta()).get();
+            Tarjeta tarjetaAux = this.tarjetaRepository.findById(dto.getCodTarjeta()).get();
             Tarjeta tarjetaTmp = TarjetaBuilder.toTarjeta(dto);
             Tarjeta tarjeta = TarjetaBuilder.copyTarjeta(tarjetaTmp, tarjetaAux);
             tarjeta.setFechaUltimoCambio(new Date());
@@ -77,7 +77,7 @@ public class TarjetaService {
             Optional<Tarjeta> tarjeta = this.tarjetaRepository.findById(codTarjeta);
             if (tarjeta.isPresent()) {
                 this.tarjetaRepository.delete(tarjeta.get());
-                log.info("Se elimino con exito el tipo de cuenta: {}", tarjeta);
+                log.info("Se elimino con exito la tarjeta: {}", tarjeta);
             } else {
                 throw new RuntimeException("La tarjeta con ID: " + codTarjeta + " no existe");
             }

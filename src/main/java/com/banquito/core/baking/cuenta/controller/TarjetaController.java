@@ -57,7 +57,7 @@ public class TarjetaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable("id") Integer id) {
+    public ResponseEntity<Void> eliminar(@PathVariable(name = "id") Integer id) {
         log.info("Se va a eliminar la tarjeta con ID: {}", id);
         try {
             this.tarjetaService.eliminar(id);
@@ -80,7 +80,7 @@ public class TarjetaController {
         }
     }
 
-    @GetMapping("/numeroTarjeta/{tarjeta}")
+    @GetMapping("/numero/{tarjeta}")
     public ResponseEntity<TarjetaDTO> buscarPorTarjeta(@PathVariable(name = "tarjeta") String numero) {
         log.info("Obteniendo numero de tarjeta: {}", numero);
         try {

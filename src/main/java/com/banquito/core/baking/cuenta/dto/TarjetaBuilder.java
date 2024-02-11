@@ -50,8 +50,8 @@ public class TarjetaBuilder {
         if (source.getNumero() != null) {
             destiny.setNumero(source.getNumero());
         }
-        destiny.setFechaEmision(source.getFechaEmision());
-        destiny.setFechaVencimiento(source.getFechaVencimiento());
+
+        
         if (source.getCvc() != null) {
             destiny.setCvc(source.getCvc());
         }
@@ -67,7 +67,19 @@ public class TarjetaBuilder {
         if (source.getEstado() != null) {
             destiny.setEstado(source.getEstado());
         }
-        destiny.setFechaUltimoCambio(source.getFechaUltimoCambio());
+
+        if (source.getFechaUltimoCambio() != null) {
+            destiny.setFechaUltimoCambio(source.getFechaUltimoCambio());
+        }
+
+        if (source.getFechaEmision() != null) {
+            destiny.setFechaEmision(source.getFechaEmision());
+        }
+        
+        if (source.getFechaVencimiento() != null) {
+            destiny.setFechaVencimiento(source.getFechaVencimiento());
+        }
+        
         return destiny;
     }
 

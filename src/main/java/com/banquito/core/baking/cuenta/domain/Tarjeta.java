@@ -59,7 +59,7 @@ public class Tarjeta {
     private Date fechaUltimoCambio;
 
     @Version
-    private Long version;
+    private long version;
 
     public Tarjeta() {
     }
