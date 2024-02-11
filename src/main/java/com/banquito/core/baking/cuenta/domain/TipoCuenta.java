@@ -1,17 +1,16 @@
 package com.banquito.core.baking.cuenta.domain;
 
-import jakarta.persistence.Entity;
-
-import java.sql.Timestamp;
+import java.util.Date;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Id;
 
 @Getter
 @Setter
@@ -21,26 +20,32 @@ public class TipoCuenta {
     @Id
     @Column(name = "COD_TIPO_CUENTA", nullable = false, length = 10)
     private String codTipoCuenta;
+
     @Column(name = "COD_TASA_INTERES", nullable = false, length = 50)
     private String codTasaInteres;
+
     @Column(name = "NOMBRE", nullable = false, length = 50)
     private String nombre;
+
     @Column(name = "DESCRIPCION", nullable = false, length = 500)
     private String descripcion;
+
     @Column(name = "TIPO_CAPITALIZACION", nullable = false, length = 3)
     private String tipoCapitalizacion;
+
     @Column(name = "FORMA_CAPITALIZACION", nullable = false, length = 3)
     private String formaCapitalizacion;
+
     @Column(name = "MAXIMO_NUMERO_INTERVINIENTES", nullable = false, length = 2)
     private Integer maximoNumeroIntervinientes;
 
     @Column(name = "FECHA_CREACION", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaCreacion;
+    private Date fechaCreacion;
 
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaUltimoCambio;
+    private Date fechaUltimoCambio;
 
     @Version
     private Long version;
@@ -76,5 +81,4 @@ public class TipoCuenta {
             return false;
         return true;
     }
-
 }

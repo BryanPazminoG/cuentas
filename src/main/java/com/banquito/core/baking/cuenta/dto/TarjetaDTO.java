@@ -1,6 +1,7 @@
 package com.banquito.core.baking.cuenta.dto;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class TarjetaDTO {
     private String tipoTarjeta;
     private String redPago;
     private String estado;
-    private Timestamp fechaUltimoCambio;
+    private Date fechaUltimoCambio;
 
     @Override
     public int hashCode() {
