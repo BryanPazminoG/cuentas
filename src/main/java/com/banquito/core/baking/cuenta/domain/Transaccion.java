@@ -1,7 +1,7 @@
 package com.banquito.core.baking.cuenta.domain;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,18 +51,18 @@ public class Transaccion {
 
     @Column(name = "FECHA_CREACION", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaCreacion;
+    private Date fechaCreacion;
 
     @Column(name = "ESTADO", nullable = false, length = 3)
     private String estado;
 
     @Column(name = "FECHA_AFECTACION", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaAfectacion;
+    private Date fechaAfectacion;
 
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaUltimoCambio;
+    private Date fechaUltimoCambio;
 
     @Version
     private Long version;

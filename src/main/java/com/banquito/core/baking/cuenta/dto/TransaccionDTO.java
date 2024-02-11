@@ -1,7 +1,7 @@
 package com.banquito.core.baking.cuenta.dto;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import lombok.Builder;
 import lombok.Data;
@@ -18,19 +18,10 @@ public class TransaccionDTO {
     private BigDecimal valorHaber;
     private String tipoTransaccion;
     private String detalle;
-    private Timestamp fechaCreacion;
+    private Date fechaCreacion;
     private String estado;
-    private Timestamp fechaAfectacion;
-    private Timestamp fechaUltimoCambio;
-
-    @Override
-    public String toString() {
-        return "TransaccionDTO [ codCuentaOrigen=" + codCuentaOrigen
-                + ", codCuentaDestino=" + codCuentaDestino + ", codUnico=" + codUnico + ", tipoAfectacion="
-                + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber=" + valorHaber + ", tipoTransaccion="
-                + tipoTransaccion + ", detalle=" + detalle + ", fechaCreacion=" + fechaCreacion + ", estado=" + estado
-                + ", fechaAfectacion=" + fechaAfectacion + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
-    }
+    private Date fechaAfectacion;
+    private Date fechaUltimoCambio;
 
     @Override
     public boolean equals(Object obj) {
@@ -57,6 +48,12 @@ public class TransaccionDTO {
         return result;
     }
 
-    
-    
+    @Override
+    public String toString() {
+        return "TransaccionDTO [ codCuentaOrigen=" + codCuentaOrigen
+                + ", codCuentaDestino=" + codCuentaDestino + ", codUnico=" + codUnico + ", tipoAfectacion="
+                + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber=" + valorHaber + ", tipoTransaccion="
+                + tipoTransaccion + ", detalle=" + detalle + ", fechaCreacion=" + fechaCreacion + ", estado=" + estado
+                + ", fechaAfectacion=" + fechaAfectacion + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
+    }
 }

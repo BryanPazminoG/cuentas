@@ -1,6 +1,5 @@
 package com.banquito.core.baking.cuenta.controller;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,9 +31,10 @@ public class CuentaIntervinientesController {
     @GetMapping("/cuentas/{cuentaid}/clientes/{clientepersonaid}")
     public ResponseEntity<CuentaIntervinientes> GetById(@PathVariable("cuentaid") Integer cuentaId,
             @PathVariable("clientepersonaid") String clientePersonaId) {
-            log.info("Recibida solicitud para obtener la cuenta interveniente con ID de cuenta: {} y ID de cliente: {}", cuentaId, clientePersonaId);
+        log.info("Recibida solicitud para obtener la cuenta interveniente con ID de cuenta: {} y ID de cliente: {}",
+                cuentaId, clientePersonaId);
 
-        return cuentaIntervinientesService.getById(cuentaId, clientePersonaId)
+        return this.cuentaIntervinientesService.getById(cuentaId, clientePersonaId)
                 .map(register -> new ResponseEntity<>(register, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -42,8 +42,8 @@ public class CuentaIntervinientesController {
     @GetMapping("/cuentas/{cuentaid}")
     public ResponseEntity<Iterable<CuentaIntervinientes>> ObtenerPorCuenta(@PathVariable("cuentaid") Integer cuentaId) {
         log.info("Se encontraron cuentas intervenientes para la cuenta con ID: {}", cuentaId);
-        Iterable<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesService.getByCuenta(cuentaId);
-        
+        Iterable<CuentaIntervinientes> cuentaIntervinientes = this.cuentaIntervinientesService.getByCuenta(cuentaId);
+
         if (cuentaIntervinientes != null) {
             log.info("Datos encontrados para la cuenta con código: {}", cuentaId);
             return new ResponseEntity<>(cuentaIntervinientes, HttpStatus.OK);
@@ -54,10 +54,11 @@ public class CuentaIntervinientesController {
     }
 
     @GetMapping("/clientes/{clientepersonaid}")
-    public ResponseEntity<Iterable<CuentaIntervinientes>> ObtenerPorCliente(@PathVariable("clientepersonaid") Integer clientepersonaid) {
+    public ResponseEntity<Iterable<CuentaIntervinientes>> ObtenerPorCliente(
+            @PathVariable("clientepersonaid") Integer clientepersonaid) {
         log.info("Se encontraron cuentas intervenientes para el cliete con ID: {}", clientepersonaid);
-        Iterable<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesService.getByCuenta(clientepersonaid);
-        
+        Iterable<CuentaIntervinientes> cuentaIntervinientes = this.cuentaIntervinientesService.getByCuenta(clientepersonaid);
+
         if (cuentaIntervinientes != null) {
             log.info("Datos encontrados para el cliente con código: {}", clientepersonaid);
             return new ResponseEntity<>(cuentaIntervinientes, HttpStatus.OK);
@@ -68,22 +69,35 @@ public class CuentaIntervinientesController {
     }
 
     @PostMapping
-    public ResponseEntity<CuentaIntervinientes> Guardar(@RequestBody CuentaIntervinientes cuentaIntervinientes) {
+    public ResponseEntity<Void> Guardar(@RequestBody CuentaIntervinientes cuentaIntervinientes) {
         log.info("Se va a guardar cuenta interviniente: {}", cuentaIntervinientes);
-        return new ResponseEntity<>(cuentaIntervinientesService.crear(cuentaIntervinientes), HttpStatus.OK);
+        try {
+            this.cuentaIntervinientesService.crear(cuentaIntervinientes);
+            return ResponseEntity.noContent().build();
+        } catch(RuntimeException rte) {
+            log.error("Error al guardar cuenta interviniente", rte);
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/cuentas/{cuentaid}/clientes/{clienteid}")
     public ResponseEntity<Boolean> Borrar(@PathVariable("cuentaid") Integer cuentaId,
             @PathVariable("clienteid") String clieclientePersonaIdnteId) {
         cuentaIntervinientesService.borrar(cuentaId, clieclientePersonaIdnteId);
-        log.info("Cuenta interveniente eliminada con éxito. ID de cuenta: {}, ID de cliente/persona: {}", cuentaId, clieclientePersonaIdnteId);
+        log.info("Cuenta interveniente eliminada con exito. ID de cuenta: {}, ID de cliente/persona: {}", cuentaId,
+                clieclientePersonaIdnteId);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<CuentaIntervinientes> actualizar(@RequestBody CuentaIntervinientes cuentaIntervinientes) {
-        log.info("Cuenta interveniente actualizada con éxito: {}", cuentaIntervinientes);
-        return new ResponseEntity<>(cuentaIntervinientesService.actualizar(cuentaIntervinientes), HttpStatus.OK);
+    public ResponseEntity<Void> actualizar(@RequestBody CuentaIntervinientes cuentaIntervinientes) {        
+        log.info("Se va a actualizar la cuenta interviniente: {}", cuentaIntervinientes);
+        try {
+            this.cuentaIntervinientesService.actualizar(cuentaIntervinientes);
+            return ResponseEntity.noContent().build();
+        } catch(RuntimeException rte) {
+            log.error("Error al actualizar el cuenta interviniente", rte);
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
