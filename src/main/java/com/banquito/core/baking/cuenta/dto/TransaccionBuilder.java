@@ -6,11 +6,18 @@ public class TransaccionBuilder {
 
     public static TransaccionDTO toDTO(Transaccion transaccion) {
 
-        TransaccionDTO dto = TransaccionDTO.builder().codCuentaDestino(transaccion.getCodCuentaDestino())
+        TransaccionDTO dto = TransaccionDTO.builder()
                 .codCuentaOrigen(transaccion.getCodCuentaOrigen())
+                .codCuentaDestino(transaccion.getCodCuentaDestino())
+                .tipoAfectacion(transaccion.getTipoAfectacion())
+
+                .valorDebe(transaccion.getValorDebe())
+                .valorHaber(transaccion.getValorHaber())
+                .tipoTransaccion(transaccion.getTipoTransaccion())
                 .codUnico(transaccion.getCodUnico())
                 .detalle(transaccion.getDetalle())
                 .estado(transaccion.getEstado())
+                .fechaCreacion(transaccion.getFechaCreacion())
                 .fechaAfectacion(transaccion.getFechaAfectacion())
                 .fechaUltimoCambio(transaccion.getFechaUltimoCambio()).build();
         return dto;
