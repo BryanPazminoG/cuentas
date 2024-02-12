@@ -11,15 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.banquito.core.baking.cuenta.domain.CuentaIntervinientes;
-import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
 import com.banquito.core.baking.cuenta.service.CuentaIntervinientesService;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/cuentaintervinientes")
 public class CuentaIntervinientesController {

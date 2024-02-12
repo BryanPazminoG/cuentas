@@ -9,6 +9,8 @@ import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.dao.TransaccionRepository;
 import com.banquito.core.baking.cuenta.domain.Cuenta;
@@ -45,7 +47,7 @@ public class TransaccionService {
     public void crear(TransaccionDTO dto) {
         try {
             Transaccion transaccion = TransaccionBuilder.toTransaccion(dto);
-            transaccion.setCodUnico("1231231231231");
+            transaccion.setCodUnico(new DigestUtils("MD5").digestAsHex(dto.toString()));
             transaccion.setFechaCreacion(new Date());
             transaccion.setFechaUltimoCambio(new Date());
             this.transaccionRepository.save(transaccion);
@@ -179,6 +181,13 @@ public class TransaccionService {
                     log.info("Transferencia realizada con exito. Cuenta origen: {}, Cuenta destino: {}, Monto: {}",
                             cuentaO.getNumeroCuenta(), cuentaD.getNumeroCuenta(), transaccion.getValorDebe());
                 }
+
+                transaccion.setCodUnico(new DigestUtils("MD5").digestAsHex(dto.toString()));
+                transaccion.setEstado("EXI");
+                transaccion.setFechaCreacion(new Date());
+                transaccion.setFechaUltimoCambio(new Date());
+                transaccion.setTipoAfectacion("D");
+                transaccion.setVersion(1L);
                 transaccion.hashCode();
                 this.transaccionRepository.save(transaccion);
                 log.info("Transaccion creada: {}", transaccion);
