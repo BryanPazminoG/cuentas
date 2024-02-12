@@ -56,9 +56,9 @@ public class CuentaIntervinientesController {
 
     @GetMapping("/clientes/{clientepersonaid}")
     public ResponseEntity<Iterable<CuentaIntervinientes>> ObtenerPorCliente(
-            @PathVariable("clientepersonaid") Integer clientepersonaid) {
+            @PathVariable("clientepersonaid") String clientepersonaid) {
         log.info("Se encontraron cuentas intervenientes para el cliete con ID: {}", clientepersonaid);
-        Iterable<CuentaIntervinientes> cuentaIntervinientes = this.cuentaIntervinientesService.getByCuenta(clientepersonaid);
+        Iterable<CuentaIntervinientes> cuentaIntervinientes = this.cuentaIntervinientesService.getByCodCliente(clientepersonaid);
 
         if (cuentaIntervinientes != null) {
             log.info("Datos encontrados para el cliente con código: {}", clientepersonaid);

@@ -43,14 +43,15 @@ public class CuentaService {
     }
 
     @Transactional
-    public void crear(CuentaDTO dto) {
+    public Integer crear(CuentaDTO dto) {
         try {
             Cuenta cuenta = CuentaBuilder.toCuenta(dto);
             cuenta.setFechaCreacion(new Date());
             cuenta.setFechaUltimoCambio(new Date());
             cuenta.setEstado("ACT");
-            this.cuentaRepository.save(cuenta);
+            Cuenta CuentaSave = this.cuentaRepository.save(cuenta);
             log.info("Se creo la cuenta: {}", cuenta);
+            return CuentaSave.getCodCuenta();
         } catch (Exception e) {
             throw new RuntimeException("Error al crear la cuenta.", e);
         }

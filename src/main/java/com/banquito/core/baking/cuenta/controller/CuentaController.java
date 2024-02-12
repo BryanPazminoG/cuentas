@@ -47,11 +47,11 @@ public class CuentaController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody CuentaDTO cuenta) {
+    public ResponseEntity<Integer> crear(@RequestBody CuentaDTO cuenta) {
         log.info("Se va a crear la cuenta: {}", cuenta);
         try {
-            this.cuentaService.crear(cuenta);
-            return ResponseEntity.noContent().build();
+            Integer codCuenta = this.cuentaService.crear(cuenta);
+            return ResponseEntity.ok(codCuenta);
         } catch(RuntimeException rte) {
             log.error("Error al crear la cuenta", rte);
             return ResponseEntity.badRequest().build();
