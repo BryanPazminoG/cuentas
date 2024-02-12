@@ -33,11 +33,11 @@ public class Tarjeta {
 
     @Column(name = "FECHA_EMISION", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaEmision;
+    private Timestamp fechaEmision;
 
     @Column(name = "FECHA_VENCIMIENTO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaVencimiento;
+    private Timestamp fechaVencimiento;
 
     @Column(name = "CVC", nullable = false, length = 64)
     private String cvc;
