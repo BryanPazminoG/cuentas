@@ -5,9 +5,14 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+
 import com.banquito.core.baking.cuenta.dao.CuentaIntervinientesRepository;
 import com.banquito.core.baking.cuenta.domain.CuentaIntervinientes;
 import com.banquito.core.baking.cuenta.domain.CuentaIntervinientesPK;
+import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -94,9 +99,10 @@ public class CuentaIntervinientesService {
                                 + cuentaIntervinientesdto.getPK().getCodClientePersona() + " no existe");
             }
         } catch (Exception e) {
-            throw new CreacionException("Ocurrio un error al actualizar la cuenta, error: " + e.getMessage(), e);
+            throw new CreacionException("Ocurrió un error al actualizar la cuenta, error: " + e.getMessage(), e);
         }
     }
+    
 
     public void borrar(Integer codCuenta, String codClientePersona) {
         try {
