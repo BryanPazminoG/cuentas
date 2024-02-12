@@ -21,7 +21,7 @@ import com.banquito.core.baking.cuenta.service.TransaccionService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/v1/transacciones")
 public class TransaccionController {
