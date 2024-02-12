@@ -45,7 +45,9 @@ public class TransaccionService {
     public void crear(TransaccionDTO dto) {
         try {
             Transaccion transaccion = TransaccionBuilder.toTransaccion(dto);
+            transaccion.setCodUnico("1231231231231");
             transaccion.setFechaCreacion(new Date());
+            transaccion.setFechaUltimoCambio(new Date());
             this.transaccionRepository.save(transaccion);
             log.info("Se creo la transaccion: {}", transaccion);
         } catch (Exception e) {

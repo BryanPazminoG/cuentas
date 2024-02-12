@@ -20,6 +20,8 @@ public class TransaccionBuilder {
 
         Transaccion transaccion = new Transaccion();
         transaccion.setTipoAfectacion(dto.getTipoAfectacion());
+        transaccion.setCodCuentaOrigen(dto.getCodCuentaOrigen());
+        transaccion.setCodCuentaDestino(dto.getCodCuentaDestino());
         transaccion.setValorDebe(dto.getValorDebe());
         transaccion.setValorHaber(dto.getValorHaber());
         transaccion.setTipoTransaccion(dto.getTipoTransaccion());
