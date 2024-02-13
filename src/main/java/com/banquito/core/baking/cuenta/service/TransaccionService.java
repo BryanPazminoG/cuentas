@@ -59,7 +59,7 @@ public class TransaccionService {
     }
 
     @Transactional
-    public void depositar(String numCuenta, BigDecimal valorDebe) {
+    public Integer depositar(String numCuenta, BigDecimal valorDebe) {
         try {
             log.info("Iniciando el proceso de deposito en la cuenta: {}", numCuenta);
             int longitud = 64;
@@ -95,6 +95,7 @@ public class TransaccionService {
                 cuentaRepository.save(cuentaBeneficiario);
                 this.transaccionRepository.save(transaccion);
                 log.info("Deposito realizado con exito. Transaccion creada: {}", transaccion);
+                return transaccion.getCodTransaccion();
             } else {
                 throw new RuntimeException("No existe el numero de cuenta ingresado");
             }

@@ -58,14 +58,14 @@ public class TransaccionController {
     }
 
     @PostMapping("/depositos")
-    public ResponseEntity<Void> depositarMonto(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<Integer> depositarMonto(@RequestBody Map<String, Object> requestBody) {
         log.info("Recibida solicitud para depositar monto en la cuenta. Detalles: {}", requestBody);
 
         try {
             String numeroCuenta = (String) requestBody.get("numeroCuenta");
             BigDecimal valorDebe = new BigDecimal(requestBody.get("valorDebe").toString());
-            this.transaccionService.depositar(numeroCuenta, valorDebe);
-            return ResponseEntity.noContent().build();
+            Integer codigo =this.transaccionService.depositar(numeroCuenta, valorDebe);
+            return ResponseEntity.ok(codigo);
         } catch (RuntimeException rte) {
             log.error("Error al realizar el deposito", rte);
             return ResponseEntity.badRequest().build();
