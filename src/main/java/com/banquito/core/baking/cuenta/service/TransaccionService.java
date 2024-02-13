@@ -73,7 +73,7 @@ public class TransaccionService {
 
                 cuentaBeneficiario.setSaldoContable(cuentaBeneficiario.getSaldoContable().add(valorDebe));
                 cuentaBeneficiario.setSaldoDisponible(cuentaBeneficiario.getSaldoDisponible().add(valorDebe));
-                //cuentaBeneficiario.setFechaUltimoCambio(new Date());
+                cuentaBeneficiario.setFechaUltimoCambio(new Date());
 
                 transaccion.setCodCuentaDestino(cuentaBeneficiario.getCodCuenta());
 
