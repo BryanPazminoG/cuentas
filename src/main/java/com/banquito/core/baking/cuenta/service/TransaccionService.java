@@ -176,22 +176,25 @@ public class TransaccionService {
                     cuentaD.setSaldoDisponible(
                             cuentaD.getSaldoDisponible().add(transaccion.getValorDebe()));
 
+                    transaccion.setCodUnico(new DigestUtils("MD5").digestAsHex(dto.toString()));
+                    transaccion.setEstado("EXI");
+                    transaccion.setFechaCreacion(new Date());
+                    transaccion.setFechaUltimoCambio(new Date());
+                    transaccion.setTipoAfectacion("D");
+                    transaccion.setVersion(1L);
+                    transaccion.hashCode();
+                    this.transaccionRepository.save(transaccion);
+                log.info("Transaccion creada: {}", transaccion);
                     cuentaRepository.save(cuentaO);
                     cuentaRepository.save(cuentaD);
 
+                    
                     log.info("Transferencia realizada con exito. Cuenta origen: {}, Cuenta destino: {}, Monto: {}",
                             cuentaO.getNumeroCuenta(), cuentaD.getNumeroCuenta(), transaccion.getValorDebe());
+                    
                 }
 
-                transaccion.setCodUnico(new DigestUtils("MD5").digestAsHex(dto.toString()));
-                transaccion.setEstado("EXI");
-                transaccion.setFechaCreacion(new Date());
-                transaccion.setFechaUltimoCambio(new Date());
-                transaccion.setTipoAfectacion("D");
-                transaccion.setVersion(1L);
-                transaccion.hashCode();
-                this.transaccionRepository.save(transaccion);
-                log.info("Transaccion creada: {}", transaccion);
+                
             } else {
                 throw new RuntimeException("El tipo de cuenta no es compatible con depositos");
             }
