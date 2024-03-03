@@ -12,7 +12,7 @@ import com.banquito.core.baking.cuenta.domain.Cuenta;
 public interface CuentaRepository extends CrudRepository<Cuenta, Integer>{
     Cuenta findByNumeroCuenta (String numeroCuenta);
     List<Cuenta> findByFechaCreacionAndFechaUltimoCambioOrderByFechaUltimoCambio(Timestamp fechaCreacion, Timestamp fechaUltimoCambio);
-    List<Cuenta> findByCodCliente(Integer codCliente);
+    List<Cuenta> findByCodCliente(String codCliente);   
 
 
 }
