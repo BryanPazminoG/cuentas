@@ -11,5 +11,4 @@ import com.banquito.core.baking.cuenta.domain.TipoCuenta;
 @Repository
 public interface TipoCuentaRepository extends CrudRepository<TipoCuenta, String>{
     List<TipoCuenta> findByTipoCapitalizacionAndFechaCreacion(String tipoCapitalizacion, Timestamp fechaCreacion);
-    
 }

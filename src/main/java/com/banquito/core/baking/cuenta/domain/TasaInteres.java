@@ -1,5 +1,6 @@
 package com.banquito.core.baking.cuenta.domain;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
@@ -8,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
@@ -15,38 +17,30 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @Entity
-@Table(name = "TARJETA")
-public class Tarjeta {
+@Table(name = "TASA_INTERES")
+public class TasaInteres {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COD_TARJETA", nullable = false)
-    private Integer codTarjeta;
+    @Column(name = "COD_TASA_INTERES", nullable = false)
+    private Integer codTasaInteres;
 
-    @Column(name = "COD_CUENTA", nullable = false)
-    private Integer codCliente;
+    @Column(name = "COD_TIPO_CUENTA", nullable = false)
+    private Integer codTipoCuenta; 
 
-    @Column(name = "NUMERO", nullable = false, length = 18)
-    private String numero;
+    @Column(name = "TASA_INTERES", nullable = false, precision = 18, scale = 2)
+    private BigDecimal tasaInteres;
 
-    @Column(name = "FECHA_EMISION", nullable = false)
+    @Column(name = "FECHA_CREACION", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaEmision;
+    private Timestamp fechaCreacion;
 
     @Column(name = "FECHA_VIGENCIA", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaVigencia;
-
-    @Column(name = "CVV", nullable = false, length = 64)
-    private String cvc;
-
-    @Column(name = "TIPO_TARJETA", nullable = false, length = 3)
-    private String tipoTarjeta;
-
-    @Column(name = "RED_PAGO", nullable = false, length = 3)
-    private String redPago;
 
     @Column(name = "ESTADO", nullable = false, length = 3)
     private String estado;
@@ -58,19 +52,18 @@ public class Tarjeta {
     @Version
     private Long version;
 
-    public Tarjeta() {
+    public TasaInteres() {
     }
 
-    public Tarjeta(Integer codTarjeta) {
-        this.codTarjeta = codTarjeta;
+    public TasaInteres(Integer codTasaInteres) {
+        this.codTasaInteres = codTasaInteres;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((codCliente == null) ? 0 : codCliente.hashCode());
-        result = prime * result + ((numero == null) ? 0 : numero.hashCode());
+        result = prime * result + ((codTasaInteres == null) ? 0 : codTasaInteres.hashCode());
         return result;
     }
 
@@ -82,19 +75,13 @@ public class Tarjeta {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Tarjeta other = (Tarjeta) obj;
-        if (codCliente == null) {
-            if (other.codCliente != null)
+        TasaInteres other = (TasaInteres) obj;
+        if (codTasaInteres == null) {
+            if (other.codTasaInteres != null)
                 return false;
-        } else if (!codCliente.equals(other.codCliente))
-            return false;
-        if (numero == null) {
-            if (other.numero != null)
-                return false;
-        } else if (!numero.equals(other.numero))
+        } else if (!codTasaInteres.equals(other.codTasaInteres))
             return false;
         return true;
     }
 
-    
 }

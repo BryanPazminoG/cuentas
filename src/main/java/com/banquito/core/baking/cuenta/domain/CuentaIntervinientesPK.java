@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +25,5 @@ public class CuentaIntervinientesPK implements Serializable {
         this.codCuenta = codCuenta;
         this.codClientePersona = codClientePersona;
     }
-    
     
 }

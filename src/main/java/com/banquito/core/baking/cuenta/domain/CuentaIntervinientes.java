@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,9 @@ import lombok.Setter;
 public class CuentaIntervinientes {
     @EmbeddedId
     private CuentaIntervinientesPK PK;
+
+    @Column(name = "TIPO_INTERVINIENTE", nullable = false, length = 3)
+    private String tipoInterviniente;
 
     @Column(name = "FECHA_INICIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)

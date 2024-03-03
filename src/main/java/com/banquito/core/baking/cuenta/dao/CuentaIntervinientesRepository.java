@@ -11,5 +11,4 @@ import com.banquito.core.baking.cuenta.domain.CuentaIntervinientesPK;
 @Repository
 public interface CuentaIntervinientesRepository extends CrudRepository<CuentaIntervinientes, CuentaIntervinientesPK> {
 
-    //List<CuentaIntervinientes> findByFechaInicio(Timestamp fechaInicio, CuentaIntervinientesPK id);
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,7 @@ public class Transaccion {
     @Column(name = "COD_CUENTA", nullable = false)
     private Integer codCuenta;
 
-    @Column(name = "COD_UNICO", nullable = false, length = 64)
+    @Column(name = "COD_UNICO", nullable = false, length = 32)
     private String codUnico;
 
     @Column(name = "TIPO_AFECTACION", nullable = false, length = 1)
@@ -40,8 +41,11 @@ public class Transaccion {
     @Column(name = "VALOR_HABER", nullable = false, precision = 18, scale = 2)
     private BigDecimal valorHaber;
 
-    @Column(name = "TIPO_TRANSACCION", nullable = false, length = 8)
+    @Column(name = "TIPO_TRANSACCION", nullable = false, length = 3)
     private String tipoTransaccion;
+
+    @Column(name = "CANAL", nullable = false, length = 3)
+    private String canal;
 
     @Column(name = "DETALLE", nullable = false, length = 50)
     private String detalle;
@@ -57,20 +61,12 @@ public class Transaccion {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaAfectacion;
 
-    // @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = true)
-    // @Temporal(TemporalType.TIMESTAMP)
-    // private Timestamp fechaUltimoCambio;
+    @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp fechaUltimoCambio;
 
     @Version
     private Long version;
-
-    // @ManyToOne()
-    // @JoinColumn(name = "COD_CUENTA_ORIGEN", nullable = false, insertable = false, updatable = false)
-    // private Cuenta codCuentaOrigen;
-
-    // @ManyToOne()
-    // @JoinColumn(name = "COD_CUENTA_DESTINO", nullable = false, insertable = false, updatable = false)
-    // private Cuenta codCuentaDestino;
 
     public Transaccion() {
     }
@@ -78,8 +74,6 @@ public class Transaccion {
     public Transaccion(Integer codTransaccion) {
         this.codTransaccion = codTransaccion;
     }
-
-    
 
     @Override
     public int hashCode() {
@@ -119,7 +113,5 @@ public class Transaccion {
                 + ", tipoTransaccion=" + tipoTransaccion + ", detalle=" + detalle + ", fechaCreacion=" + fechaCreacion
                 + ", estado=" + estado + ", fechaAfectacion=" + fechaAfectacion + "]";
     }
-
     
-
 }
