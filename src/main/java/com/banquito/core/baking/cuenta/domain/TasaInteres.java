@@ -1,42 +1,38 @@
 package com.banquito.core.baking.cuenta.domain;
 
-import jakarta.persistence.Entity;
-
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
 
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Id;
+
 
 @Getter
 @Setter
 @Entity
-@Table(name = "TIPO_CUENTA")
-public class TipoCuenta {
+@Table(name = "TASA_INTERES")
+public class TasaInteres {
     @Id
-    @Column(name = "COD_TIPO_CUENTA", nullable = false, length = 10)
-    private String codTipoCuenta;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "COD_TASA_INTERES", nullable = false)
+    private Integer codTasaInteres;
 
-    @Column(name = "NOMBRE", nullable = false, length = 50)
-    private String nombre;
+    @Column(name = "COD_TIPO_CUENTA", nullable = false)
+    private Integer codTipoCuenta; 
 
-    @Column(name = "DESCRIPCION", nullable = false, length = 500)
-    private String descripcion;
-
-    @Column(name = "TIPO_CAPITALIZACION", nullable = false, length = 3)
-    private String tipoCapitalizacion;
-
-    @Column(name = "FORMA_CAPITALIZACION", nullable = false, length = 3)
-    private String formaCapitalizacion;
-
-    @Column(name = "MAXIMO_NUMERO_INTERVINIENTES", nullable = false, length = 2)
-    private Integer maximoNumeroIntervinientes;
+    @Column(name = "TASA_INTERES", nullable = false, precision = 18, scale = 2)
+    private BigDecimal tasaInteres;
 
     @Column(name = "FECHA_CREACION", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,6 +42,9 @@ public class TipoCuenta {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaVigencia;
 
+    @Column(name = "ESTADO", nullable = false, length = 3)
+    private String estado;
+
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaUltimoCambio;
@@ -53,18 +52,18 @@ public class TipoCuenta {
     @Version
     private Long version;
 
-    public TipoCuenta() {
+    public TasaInteres() {
     }
 
-    public TipoCuenta(String codTipoCuenta) {
-        this.codTipoCuenta = codTipoCuenta;
+    public TasaInteres(Integer codTasaInteres) {
+        this.codTasaInteres = codTasaInteres;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((codTipoCuenta == null) ? 0 : codTipoCuenta.hashCode());
+        result = prime * result + ((codTasaInteres == null) ? 0 : codTasaInteres.hashCode());
         return result;
     }
 
@@ -76,11 +75,11 @@ public class TipoCuenta {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        TipoCuenta other = (TipoCuenta) obj;
-        if (codTipoCuenta == null) {
-            if (other.codTipoCuenta != null)
+        TasaInteres other = (TasaInteres) obj;
+        if (codTasaInteres == null) {
+            if (other.codTasaInteres != null)
                 return false;
-        } else if (!codTipoCuenta.equals(other.codTipoCuenta))
+        } else if (!codTasaInteres.equals(other.codTasaInteres))
             return false;
         return true;
     }

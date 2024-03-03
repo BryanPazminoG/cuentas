@@ -1,6 +1,6 @@
 package com.banquito.core.baking.cuenta.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,20 +21,23 @@ public class CuentaIntervinientes {
     @EmbeddedId
     private CuentaIntervinientesPK PK;
 
+    @Column(name = "TIPO_INTERVINIENTE", nullable = false, length = 3)
+    private String tipoInterviniente;
+
     @Column(name = "FECHA_INICIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaInicio;
+    private Timestamp fechaInicio;
 
     @Column(name = "FECHA_FIN", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaFin;
+    private Timestamp fechaFin;
 
     @Column(name = "ESTADO", nullable = false, length = 3)
     private String estado;
 
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaUltimoCambio;
+    private Timestamp fechaUltimoCambio;
 
     @Version
     private Long version;
@@ -69,15 +73,5 @@ public class CuentaIntervinientes {
             return false;
         return true;
     }
-
-    @Override
-    public String toString() {
-        return "CuentaIntervinientes [PK=" + PK + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin
-                + ", estado=" + estado + ", fechaUltimoCambio=" + fechaUltimoCambio + ", version=" + version + "]";
-    }
-
-    
-
-    
 
 }

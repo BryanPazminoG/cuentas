@@ -1,7 +1,7 @@
 package com.banquito.core.baking.cuenta.domain;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,13 +26,10 @@ public class Transaccion {
     @Column(name = "COD_TRANSACCION", nullable = false)
     private Integer codTransaccion;
 
-    @Column(name = "COD_CUENTA_ORIGEN", nullable = true)
-    private Integer codCuentaOrigen;
+    @Column(name = "COD_CUENTA", nullable = false)
+    private Integer codCuenta;
 
-    @Column(name = "COD_CUENTA_DESTINO", nullable = true)
-    private Integer codCuentaDestino;
-
-    @Column(name = "COD_UNICO", nullable = false, length = 64)
+    @Column(name = "COD_UNICO", nullable = false, length = 32)
     private String codUnico;
 
     @Column(name = "TIPO_AFECTACION", nullable = false, length = 1)
@@ -43,39 +41,32 @@ public class Transaccion {
     @Column(name = "VALOR_HABER", nullable = false, precision = 18, scale = 2)
     private BigDecimal valorHaber;
 
-    @Column(name = "TIPO_TRANSACCION", nullable = false, length = 8)
+    @Column(name = "TIPO_TRANSACCION", nullable = false, length = 3)
     private String tipoTransaccion;
+
+    @Column(name = "CANAL", nullable = false, length = 3)
+    private String canal;
 
     @Column(name = "DETALLE", nullable = false, length = 50)
     private String detalle;
 
     @Column(name = "FECHA_CREACION", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaCreacion;
+    private Timestamp fechaCreacion;
 
     @Column(name = "ESTADO", nullable = false, length = 3)
     private String estado;
 
     @Column(name = "FECHA_AFECTACION", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaAfectacion;
+    private Timestamp fechaAfectacion;
 
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaUltimoCambio;
+    private Timestamp fechaUltimoCambio;
 
     @Version
     private Long version;
-
-    // @ManyToOne()
-    // @JoinColumn(name = "COD_CUENTA_ORIGEN", nullable = false, insertable = false,
-    // updatable = false)
-    // private Cuenta codCuentaOrigen;
-
-    // @ManyToOne()
-    // @JoinColumn(name = "COD_CUENTA_DESTINO", nullable = false, insertable =
-    // false, updatable = false)
-    // private Cuenta codCuentaDestino;
 
     public Transaccion() {
     }
@@ -117,12 +108,10 @@ public class Transaccion {
 
     @Override
     public String toString() {
-        return "Transaccion [codTransaccion=" + codTransaccion + ", codCuentaOrigen=" + codCuentaOrigen
-                + ", codCuentaDestino=" + codCuentaDestino + ", codUnico=" + codUnico + ", tipoAfectacion="
-                + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber=" + valorHaber + ", tipoTransaccion="
-                + tipoTransaccion + ", detalle=" + detalle + ", fechaCreacion=" + fechaCreacion + ", estado=" + estado
-                + ", fechaAfectacion=" + fechaAfectacion + ", fechaUltimoCambio=" + fechaUltimoCambio + ", version="
-                + version + "]";
+        return "Transaccion [codTransaccion=" + codTransaccion + ", codCuenta=" + codCuenta + ", codUnico=" + codUnico
+                + ", tipoAfectacion=" + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber=" + valorHaber
+                + ", tipoTransaccion=" + tipoTransaccion + ", detalle=" + detalle + ", fechaCreacion=" + fechaCreacion
+                + ", estado=" + estado + ", fechaAfectacion=" + fechaAfectacion + "]";
     }
-
+    
 }

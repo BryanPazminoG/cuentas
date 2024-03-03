@@ -15,5 +15,4 @@ import java.util.List;
 public interface CuentaIntervinientesRepository extends CrudRepository<CuentaIntervinientes, CuentaIntervinientesPK> {
     List<CuentaIntervinientes> findByPKCodCuenta(Integer codCuenta);
     List<CuentaIntervinientes> findByPKCodClientePersona(String codClientePersona);
-    //List<CuentaIntervinientes> findByFechaInicio(Timestamp fechaInicio, CuentaIntervinientesPK id);
 }
