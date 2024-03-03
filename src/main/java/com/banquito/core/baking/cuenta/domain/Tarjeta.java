@@ -69,8 +69,7 @@ public class Tarjeta {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((codCliente == null) ? 0 : codCliente.hashCode());
-        result = prime * result + ((numero == null) ? 0 : numero.hashCode());
+        result = prime * result + ((codTarjeta == null) ? 0 : codTarjeta.hashCode());
         return result;
     }
 
@@ -83,18 +82,12 @@ public class Tarjeta {
         if (getClass() != obj.getClass())
             return false;
         Tarjeta other = (Tarjeta) obj;
-        if (codCliente == null) {
-            if (other.codCliente != null)
+        if (codTarjeta == null) {
+            if (other.codTarjeta != null)
                 return false;
-        } else if (!codCliente.equals(other.codCliente))
-            return false;
-        if (numero == null) {
-            if (other.numero != null)
-                return false;
-        } else if (!numero.equals(other.numero))
+        } else if (!codTarjeta.equals(other.codTarjeta))
             return false;
         return true;
     }
-
     
 }

@@ -7,14 +7,18 @@ public class CuentaBuilder {
     public static CuentaDTO toDTO(Cuenta cuenta) {
 
         CuentaDTO dto = CuentaDTO.builder().codCuenta(cuenta.getCodCuenta())
-                .codCliente(cuenta.getCodCliente())
                 .codTipoCuenta(cuenta.getCodTipoCuenta())
-                .estado(cuenta.getEstado())
-                .fechaCreacion(cuenta.getFechaCreacion())
-                .fechaUltimoCambio(cuenta.getFechaUltimoCambio())
+                .codUnico(cuenta.getCodUnico())
+                .codCliente(cuenta.getCodCliente())
                 .numeroCuenta(cuenta.getNumeroCuenta())
                 .saldoContable(cuenta.getSaldoContable())
-                .saldoDisponible(cuenta.getSaldoDisponible()).build();
+                .saldoDisponible(cuenta.getSaldoDisponible())
+                .montoMaximoRetiro(cuenta.getMontoMaximoRetiro())
+                .estado(cuenta.getEstado())
+                .fechaCreacion(cuenta.getFechaCreacion())
+                .fechaActivacion(cuenta.getFechaActivacion())
+                .fechaCierre(cuenta.getFechaCierre())
+                .fechaUltimoCambio(cuenta.getFechaUltimoCambio()).build();
         return dto;
     }
 
@@ -30,16 +34,20 @@ public class CuentaBuilder {
     }
 
     public static Cuenta copyCuenta(Cuenta source, Cuenta destiny) {
-        if (source.getCodCliente() != null) {
-            destiny.setCodCliente(source.getCodCliente());
-        }
-
         if (source.getCodCuenta() != null) {
             destiny.setCodCuenta(source.getCodCuenta());
         }
 
         if (source.getCodTipoCuenta() != null) {
             destiny.setCodTipoCuenta(source.getCodTipoCuenta());
+        }
+
+        if (source.getCodUnico() != null) {
+            destiny.setCodUnico(source.getCodUnico());
+        }
+
+        if (source.getCodCliente() != null) {
+            destiny.setCodCliente(source.getCodCliente());
         }
 
         if (source.getNumeroCuenta() != null) {
@@ -54,12 +62,24 @@ public class CuentaBuilder {
             destiny.setSaldoDisponible(source.getSaldoDisponible());
         }
 
+        if (source.getMontoMaximoRetiro() != null) {
+            destiny.setMontoMaximoRetiro(source.getMontoMaximoRetiro());
+        }
+
         if (source.getEstado() != null) {
             destiny.setEstado(source.getEstado());
         }
 
         if (source.getFechaCreacion() != null) {
             destiny.setFechaCreacion(source.getFechaCreacion());
+        }
+
+        if (source.getFechaActivacion() != null) {
+            destiny.setFechaActivacion(source.getFechaActivacion());
+        }
+
+        if (source.getFechaCierre() != null) {
+            destiny.setFechaCierre(source.getFechaCierre());
         }
 
         if (source.getFechaUltimoCambio() != null) {

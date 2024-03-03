@@ -16,19 +16,11 @@ public class CuentaIntervinientesDTO {
     private String estado;
     private Date fechaUltimoCambio;
 
-    
-
-    
-
     @Override
     public String toString() {
         return "CuentaIntervinienteDTO [pk=" + pk + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin
                 + ", estado=" + estado + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
     }
-
-
-
-
 
     @Override
     public boolean equals(Object obj) {

@@ -10,5 +10,7 @@ import com.banquito.core.baking.cuenta.domain.Transaccion;
 
 @Repository
 public interface TransaccionRepository extends CrudRepository<Transaccion, Integer>{
+
     List<Transaccion> findByCodCuentaOrigen (Integer codCuentaOrigen);
+    
 }

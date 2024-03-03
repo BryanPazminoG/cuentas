@@ -80,7 +80,6 @@ public class Transaccion {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((codTransaccion == null) ? 0 : codTransaccion.hashCode());
-        result = prime * result + ((codUnico == null) ? 0 : codUnico.hashCode());
         return result;
     }
 
@@ -97,11 +96,6 @@ public class Transaccion {
             if (other.codTransaccion != null)
                 return false;
         } else if (!codTransaccion.equals(other.codTransaccion))
-            return false;
-        if (codUnico == null) {
-            if (other.codUnico != null)
-                return false;
-        } else if (!codUnico.equals(other.codUnico))
             return false;
         return true;
     }

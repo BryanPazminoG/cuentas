@@ -11,5 +11,4 @@ public interface TarjetaRepository extends CrudRepository<Tarjeta, Integer> {
 
     Tarjeta findByNumero(String numero);
     
-
 }
