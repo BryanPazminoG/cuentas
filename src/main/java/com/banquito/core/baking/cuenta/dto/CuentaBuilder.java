@@ -6,7 +6,8 @@ public class CuentaBuilder {
 
     public static CuentaDTO toDTO(Cuenta cuenta) {
 
-        CuentaDTO dto = CuentaDTO.builder().codCuenta(cuenta.getCodCuenta())
+        CuentaDTO dto = CuentaDTO.builder()
+                .codCuenta(cuenta.getCodCuenta())
                 .codTipoCuenta(cuenta.getCodTipoCuenta())
                 .codUnico(cuenta.getCodUnico())
                 .codCliente(cuenta.getCodCliente())
@@ -18,18 +19,26 @@ public class CuentaBuilder {
                 .fechaCreacion(cuenta.getFechaCreacion())
                 .fechaActivacion(cuenta.getFechaActivacion())
                 .fechaCierre(cuenta.getFechaCierre())
-                .fechaUltimoCambio(cuenta.getFechaUltimoCambio()).build();
+                .fechaUltimoCambio(cuenta.getFechaUltimoCambio())
+                .build();
         return dto;
     }
 
     public static Cuenta toCuenta(CuentaDTO dto) {
 
         Cuenta cuenta = new Cuenta();
-        cuenta.setCodCliente(dto.getCodCliente());
+        cuenta.setCodCuenta(dto.getCodCuenta());
         cuenta.setCodTipoCuenta(dto.getCodTipoCuenta());
+        cuenta.setCodUnico(dto.getCodUnico());
+        cuenta.setCodCliente(dto.getCodCliente());
         cuenta.setNumeroCuenta(dto.getNumeroCuenta());
         cuenta.setSaldoContable(dto.getSaldoContable());
         cuenta.setSaldoDisponible(dto.getSaldoDisponible());
+        cuenta.setMontoMaximoRetiro(dto.getMontoMaximoRetiro());
+        cuenta.setEstado(dto.getEstado());
+        cuenta.setFechaActivacion(dto.getFechaActivacion());
+        cuenta.setFechaCierre(dto.getFechaCierre());
+        cuenta.setFechaUltimoCambio(dto.getFechaUltimoCambio());
         return cuenta;
     }
 

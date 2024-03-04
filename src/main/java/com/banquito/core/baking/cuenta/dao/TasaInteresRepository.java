@@ -10,6 +10,6 @@ import com.banquito.core.baking.cuenta.domain.TasaInteres;
 @Repository
 public interface TasaInteresRepository extends CrudRepository<TasaInteres, Integer>{
     
-    List<TasaInteres> findByCodTipoCuenta(Integer codTipoCuenta);   
+    List<TasaInteres> findByTipoCuenta(Integer TipoCuenta); 
 
 }

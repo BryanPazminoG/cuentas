@@ -26,7 +26,7 @@ public class Tarjeta {
     private Integer codTarjeta;
 
     @Column(name = "COD_CUENTA", nullable = false)
-    private Integer codCliente;
+    private Integer codCuenta;
 
     @Column(name = "NUMERO", nullable = false, length = 18)
     private String numero;
@@ -40,7 +40,7 @@ public class Tarjeta {
     private Timestamp fechaVigencia;
 
     @Column(name = "CVV", nullable = false, length = 64)
-    private String cvc;
+    private String cvv;
 
     @Column(name = "TIPO_TARJETA", nullable = false, length = 3)
     private String tipoTarjeta;
@@ -89,5 +89,5 @@ public class Tarjeta {
             return false;
         return true;
     }
-    
+
 }

@@ -10,7 +10,7 @@ import com.banquito.core.baking.cuenta.domain.PagoInteres;
 @Repository
 public interface PagoInteresRepository extends CrudRepository<PagoInteres, Integer>{
     
-    List<PagoInteres> findByCodCuenta(Integer codCuenta);   
+    List<PagoInteres> findByCuenta(Integer Cuenta);   
 
 }
 

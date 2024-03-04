@@ -28,9 +28,6 @@ public class TasaInteres {
     @Column(name = "COD_TASA_INTERES", nullable = false)
     private Integer codTasaInteres;
 
-    @Column(name = "COD_TIPO_CUENTA", nullable = false)
-    private Integer codTipoCuenta; 
-
     @Column(name = "TASA_INTERES", nullable = false, precision = 18, scale = 2)
     private BigDecimal tasaInteres;
 
@@ -42,12 +39,12 @@ public class TasaInteres {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaVigencia;
 
-    @Column(name = "ESTADO", nullable = false, length = 3)
-    private String estado;
-
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaUltimoCambio;
+
+    @Column(name = "ESTADO", nullable = false, length = 3)
+    private String estado;
 
     @Version
     private Long version;

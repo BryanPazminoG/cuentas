@@ -1,7 +1,7 @@
 package com.banquito.core.baking.cuenta.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,19 +9,19 @@ import lombok.Data;
 @Builder
 @Data
 public class TransaccionDTO {
-
-    private Integer codCuentaOrigen;
-    private Integer codCuentaDestino;
+    private Integer codTransaccion;
+    private Integer codCuenta;
     private String codUnico;
     private String tipoAfectacion;
     private BigDecimal valorDebe;
     private BigDecimal valorHaber;
     private String tipoTransaccion;
+    private String canal;
     private String detalle;
-    private Date fechaCreacion;
+    private Timestamp fechaCreacion;
     private String estado;
-    private Date fechaAfectacion;
-    private Date fechaUltimoCambio;
+    private Timestamp fechaAfectacion;
+    private Timestamp fechaUltimoCambio;
 
     @Override
     public boolean equals(Object obj) {
@@ -50,10 +50,11 @@ public class TransaccionDTO {
 
     @Override
     public String toString() {
-        return "TransaccionDTO [ codCuentaOrigen=" + codCuentaOrigen
-                + ", codCuentaDestino=" + codCuentaDestino + ", codUnico=" + codUnico + ", tipoAfectacion="
-                + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber=" + valorHaber + ", tipoTransaccion="
-                + tipoTransaccion + ", detalle=" + detalle + ", fechaCreacion=" + fechaCreacion + ", estado=" + estado
-                + ", fechaAfectacion=" + fechaAfectacion + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
+        return "TransaccionDTO [codTransaccion=" + codTransaccion + ", codCuenta=" + codCuenta + ", codUnico="
+                + codUnico + ", tipoAfectacion=" + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber="
+                + valorHaber + ", tipoTransaccion=" + tipoTransaccion + ", canal=" + canal + ", detalle=" + detalle
+                + ", fechaCreacion=" + fechaCreacion + ", estado=" + estado + ", fechaAfectacion=" + fechaAfectacion
+                + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
     }
+
 }

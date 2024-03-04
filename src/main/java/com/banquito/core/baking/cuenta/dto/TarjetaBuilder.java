@@ -11,9 +11,8 @@ public class TarjetaBuilder {
         .codCuenta(tarjeta.getCodCuenta())
         .numero(tarjeta.getNumero())
         .fechaEmision(tarjeta.getFechaEmision())
-        .fechaVencimiento(tarjeta.getFechaVencimiento())
-        .cvc(tarjeta.getCvc())
-        .pin(tarjeta.getPin())
+        .fechaVigencia(tarjeta.getFechaVigencia())
+        .cvv(tarjeta.getCvv())
         .tipoTarjeta(tarjeta.getTipoTarjeta())
         .redPago(tarjeta.getRedPago())
         .estado(tarjeta.getEstado())
@@ -29,9 +28,8 @@ public class TarjetaBuilder {
         tarjeta.setCodCuenta(dto.getCodCuenta());
         tarjeta.setNumero(dto.getNumero());
         tarjeta.setFechaEmision(dto.getFechaEmision());
-        tarjeta.setFechaVencimiento(dto.getFechaVencimiento());
-        tarjeta.setCvc(dto.getCvc());
-        tarjeta.setPin(dto.getPin());
+        tarjeta.setFechaVigencia(dto.getFechaVigencia());
+        tarjeta.setCvv(dto.getCvv());
         tarjeta.setTipoTarjeta(dto.getTipoTarjeta());
         tarjeta.setRedPago(dto.getRedPago());
         tarjeta.setEstado(dto.getEstado());
@@ -51,33 +49,32 @@ public class TarjetaBuilder {
             destiny.setNumero(source.getNumero());
         }
 
+        if (source.getFechaEmision() != null) {
+            destiny.setFechaEmision(source.getFechaEmision());
+        }
+
+        if (source.getFechaVigencia() != null) {
+            destiny.setFechaVigencia(source.getFechaVigencia());
+        }
+
+        if (source.getCvv() != null) {
+            destiny.setCvv(source.getCvv());
+        }
         
-        if (source.getCvc() != null) {
-            destiny.setCvc(source.getCvc());
-        }
-        if (source.getPin() != null) {
-            destiny.setPin(source.getPin());
-        }
         if (source.getTipoTarjeta() != null) {
             destiny.setTipoTarjeta(source.getTipoTarjeta());
         }
+
         if (source.getRedPago() != null) {
             destiny.setRedPago(source.getRedPago());
         }
+
         if (source.getEstado() != null) {
             destiny.setEstado(source.getEstado());
         }
 
         if (source.getFechaUltimoCambio() != null) {
             destiny.setFechaUltimoCambio(source.getFechaUltimoCambio());
-        }
-
-        if (source.getFechaEmision() != null) {
-            destiny.setFechaEmision(source.getFechaEmision());
-        }
-        
-        if (source.getFechaVencimiento() != null) {
-            destiny.setFechaVencimiento(source.getFechaVencimiento());
         }
         
         return destiny;

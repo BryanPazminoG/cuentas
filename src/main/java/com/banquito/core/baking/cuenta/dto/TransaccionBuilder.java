@@ -7,16 +7,17 @@ public class TransaccionBuilder {
     public static TransaccionDTO toDTO(Transaccion transaccion) {
 
         TransaccionDTO dto = TransaccionDTO.builder()
-                .codCuentaOrigen(transaccion.getCodCuentaOrigen())
-                .codCuentaDestino(transaccion.getCodCuentaDestino())
+                .codTransaccion(transaccion.getCodTransaccion())
+                .codCuenta(transaccion.getCodCuenta())
+                .codUnico(transaccion.getCodUnico())
                 .tipoAfectacion(transaccion.getTipoAfectacion())
                 .valorDebe(transaccion.getValorDebe())
                 .valorHaber(transaccion.getValorHaber())
                 .tipoTransaccion(transaccion.getTipoTransaccion())
-                .codUnico(transaccion.getCodUnico())
+                .canal(transaccion.getCanal())
                 .detalle(transaccion.getDetalle())
-                .estado(transaccion.getEstado())
                 .fechaCreacion(transaccion.getFechaCreacion())
+                .estado(transaccion.getEstado())
                 .fechaAfectacion(transaccion.getFechaAfectacion())
                 .fechaUltimoCambio(transaccion.getFechaUltimoCambio()).build();
         return dto;
@@ -25,18 +26,16 @@ public class TransaccionBuilder {
     public static Transaccion toTransaccion(TransaccionDTO dto) {
 
         Transaccion transaccion = new Transaccion();
-        transaccion.setTipoAfectacion(dto.getTipoAfectacion());
+        transaccion.setCodTransaccion(dto.getCodTransaccion());
+        transaccion.setCodCuenta(dto.getCodCuenta());
         transaccion.setCodUnico(dto.getCodUnico());
-        transaccion.setCodCuentaOrigen(dto.getCodCuentaOrigen());
-        transaccion.setCodCuentaDestino(dto.getCodCuentaDestino());
+        transaccion.setTipoAfectacion(dto.getTipoAfectacion());
         transaccion.setValorDebe(dto.getValorDebe());
         transaccion.setValorHaber(dto.getValorHaber());
         transaccion.setTipoTransaccion(dto.getTipoTransaccion());
+        transaccion.setCanal(dto.getCanal());
         transaccion.setDetalle(dto.getDetalle());
-        transaccion.setFechaCreacion(dto.getFechaCreacion());
         transaccion.setEstado(dto.getEstado());
-        transaccion.setFechaAfectacion(dto.getFechaAfectacion());
-        transaccion.setFechaUltimoCambio(dto.getFechaUltimoCambio());
         return transaccion;
     }
 

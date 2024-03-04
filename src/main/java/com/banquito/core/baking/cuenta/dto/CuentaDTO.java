@@ -1,7 +1,7 @@
 package com.banquito.core.baking.cuenta.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 import lombok.Builder;
 import lombok.Data;
@@ -18,10 +18,10 @@ public class CuentaDTO {
     private BigDecimal saldoDisponible;
     private BigDecimal montoMaximoRetiro;
     private String estado;
-    private Date fechaCreacion;
-    private Date fechaActivacion;
-    private Date fechaCierre;
-    private Date fechaUltimoCambio;
+    private Timestamp fechaCreacion;
+    private Timestamp fechaActivacion;
+    private Timestamp fechaCierre;
+    private Timestamp fechaUltimoCambio;
 
     @Override
     public boolean equals(Object obj) {

@@ -1,18 +1,20 @@
 package com.banquito.core.baking.cuenta.domain;
 
-import jakarta.persistence.Entity;
-
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
 
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Id;
 
 @Getter
 @Setter
@@ -20,8 +22,12 @@ import jakarta.persistence.Id;
 @Table(name = "TIPO_CUENTA")
 public class TipoCuenta {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COD_TIPO_CUENTA", nullable = false, length = 10)
     private String codTipoCuenta;
+
+    @Column(name = "COD_TASA_INTERES", nullable = false)
+    private Integer codTasaInteres;
 
     @Column(name = "NOMBRE", nullable = false, length = 50)
     private String nombre;
@@ -49,6 +55,10 @@ public class TipoCuenta {
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaUltimoCambio;
+
+    @Column(name = "ESTADO", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp estado;
 
     @Version
     private Long version;

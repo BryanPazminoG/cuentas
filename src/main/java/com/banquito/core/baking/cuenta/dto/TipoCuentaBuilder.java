@@ -6,15 +6,18 @@ public class TipoCuentaBuilder {
 
     public static TipoCuentaDTO toDTO(TipoCuenta tipoCuenta) {
 
-        TipoCuentaDTO dto = TipoCuentaDTO.builder().codTasaInteres(tipoCuenta.getCodTasaInteres())
-                .codTipoCuenta(tipoCuenta.getCodTipoCuenta())
-                .descripcion(tipoCuenta.getDescripcion())
-                .fechaCreacion(tipoCuenta.getFechaCreacion())
-                .fechaUltimoCambio(tipoCuenta.getFechaUltimoCambio())
-                .formaCapitalizacion(tipoCuenta.getFormaCapitalizacion())
-                .maximoNumeroIntervinientes(tipoCuenta.getMaximoNumeroIntervinientes())
-                .nombre(tipoCuenta.getNombre())
-                .tipoCapitalizacion(tipoCuenta.getTipoCapitalizacion()).build();
+        TipoCuentaDTO dto = TipoCuentaDTO.builder()
+            .codTasaInteres(tipoCuenta.getCodTasaInteres())
+            .codTipoCuenta(tipoCuenta.getCodTipoCuenta())
+            .nombre(tipoCuenta.getNombre())
+            .descripcion(tipoCuenta.getDescripcion())
+            .tipoCapitalizacion(tipoCuenta.getTipoCapitalizacion())
+            .formaCapitalizacion(tipoCuenta.getFormaCapitalizacion())
+            .maximoNumeroIntervinientes(tipoCuenta.getMaximoNumeroIntervinientes())
+            .fechaCreacion(tipoCuenta.getFechaCreacion())
+            .fechaVigencia(tipoCuenta.getFechaVigencia())
+            .fechaUltimoCambio(tipoCuenta.getFechaUltimoCambio())
+            .build();
         return dto;
     }
 
@@ -23,13 +26,14 @@ public class TipoCuentaBuilder {
         TipoCuenta tipoCuenta = new TipoCuenta();
         tipoCuenta.setCodTasaInteres(dto.getCodTasaInteres());
         tipoCuenta.setCodTipoCuenta(dto.getCodTipoCuenta());
+        tipoCuenta.setNombre(dto.getNombre());
         tipoCuenta.setDescripcion(dto.getDescripcion());
-        tipoCuenta.setFechaCreacion(dto.getFechaCreacion());
-        tipoCuenta.setFechaUltimoCambio(dto.getFechaUltimoCambio());
+        tipoCuenta.setTipoCapitalizacion(dto.getTipoCapitalizacion());
         tipoCuenta.setFormaCapitalizacion(dto.getFormaCapitalizacion());
         tipoCuenta.setMaximoNumeroIntervinientes(dto.getMaximoNumeroIntervinientes());
-        tipoCuenta.setNombre(dto.getNombre());
-        tipoCuenta.setTipoCapitalizacion(dto.getTipoCapitalizacion());
+        tipoCuenta.setFechaCreacion(dto.getFechaCreacion());
+        tipoCuenta.setFechaVigencia(dto.getFechaVigencia());
+        tipoCuenta.setFechaUltimoCambio(dto.getFechaUltimoCambio());
         return tipoCuenta;
     }
 
@@ -66,6 +70,10 @@ public class TipoCuentaBuilder {
 
         if (source.getFechaCreacion() != null) {
             destiny.setFechaCreacion(source.getFechaCreacion());
+        }
+
+        if (source.getFechaVigencia() != null) {
+            destiny.setFechaVigencia(source.getFechaVigencia());
         }
         
         if (source.getFechaUltimoCambio() != null) {
