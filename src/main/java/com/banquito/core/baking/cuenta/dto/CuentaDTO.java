@@ -18,10 +18,8 @@ public class CuentaDTO {
     private BigDecimal saldoDisponible;
     private BigDecimal montoMaximoRetiro;
     private String estado;
-    private Timestamp fechaCreacion;
     private Timestamp fechaActivacion;
     private Timestamp fechaCierre;
-    private Timestamp fechaUltimoCambio;
 
     @Override
     public boolean equals(Object obj) {
@@ -44,6 +42,7 @@ public class CuentaDTO {
             return false;
         return true;
     }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -52,13 +51,12 @@ public class CuentaDTO {
         result = prime * result + ((numeroCuenta == null) ? 0 : numeroCuenta.hashCode());
         return result;
     }
+
     @Override
     public String toString() {
         return "CuentaDTO [codCuenta=" + codCuenta + ", codTipoCuenta=" + codTipoCuenta + ", codUnico=" + codUnico
                 + ", codCliente=" + codCliente + ", numeroCuenta=" + numeroCuenta + ", saldoContable=" + saldoContable
                 + ", saldoDisponible=" + saldoDisponible + ", montoMaximoRetiro=" + montoMaximoRetiro + ", estado="
-                + estado + ", fechaCreacion=" + fechaCreacion + ", fechaActivacion=" + fechaActivacion
-                + ", fechaCierre=" + fechaCierre + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
+                + estado + ", fechaActivacion=" + fechaActivacion + ", fechaCierre=" + fechaCierre + "]";
     }
-    
 }

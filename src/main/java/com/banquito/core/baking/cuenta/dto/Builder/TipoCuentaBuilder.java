@@ -1,6 +1,7 @@
-package com.banquito.core.baking.cuenta.dto;
+package com.banquito.core.baking.cuenta.dto.Builder;
 
 import com.banquito.core.baking.cuenta.domain.TipoCuenta;
+import com.banquito.core.baking.cuenta.dto.TipoCuentaDTO;
 
 public class TipoCuentaBuilder {
 
@@ -14,9 +15,8 @@ public class TipoCuentaBuilder {
             .tipoCapitalizacion(tipoCuenta.getTipoCapitalizacion())
             .formaCapitalizacion(tipoCuenta.getFormaCapitalizacion())
             .maximoNumeroIntervinientes(tipoCuenta.getMaximoNumeroIntervinientes())
-            .fechaCreacion(tipoCuenta.getFechaCreacion())
             .fechaVigencia(tipoCuenta.getFechaVigencia())
-            .fechaUltimoCambio(tipoCuenta.getFechaUltimoCambio())
+            .estado(tipoCuenta.getEstado())
             .build();
         return dto;
     }
@@ -31,9 +31,7 @@ public class TipoCuentaBuilder {
         tipoCuenta.setTipoCapitalizacion(dto.getTipoCapitalizacion());
         tipoCuenta.setFormaCapitalizacion(dto.getFormaCapitalizacion());
         tipoCuenta.setMaximoNumeroIntervinientes(dto.getMaximoNumeroIntervinientes());
-        tipoCuenta.setFechaCreacion(dto.getFechaCreacion());
         tipoCuenta.setFechaVigencia(dto.getFechaVigencia());
-        tipoCuenta.setFechaUltimoCambio(dto.getFechaUltimoCambio());
         return tipoCuenta;
     }
 

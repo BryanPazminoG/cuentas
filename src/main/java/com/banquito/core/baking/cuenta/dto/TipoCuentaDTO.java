@@ -15,10 +15,9 @@ public class TipoCuentaDTO {
     private String tipoCapitalizacion;
     private String formaCapitalizacion;
     private Integer maximoNumeroIntervinientes;
-    private Timestamp fechaCreacion;
     private Timestamp fechaVigencia;
-    private Timestamp fechaUltimoCambio;
-    
+    private String estado;
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -33,28 +32,23 @@ public class TipoCuentaDTO {
                 return false;
         } else if (!codTipoCuenta.equals(other.codTipoCuenta))
             return false;
-        if (codTasaInteres == null) {
-            if (other.codTasaInteres != null)
-                return false;
-        } else if (!codTasaInteres.equals(other.codTasaInteres))
-            return false;
         return true;
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((codTipoCuenta == null) ? 0 : codTipoCuenta.hashCode());
-        result = prime * result + ((codTasaInteres == null) ? 0 : codTasaInteres.hashCode());
         return result;
     }
+
     @Override
     public String toString() {
         return "TipoCuentaDTO [codTipoCuenta=" + codTipoCuenta + ", codTasaInteres=" + codTasaInteres + ", nombre="
                 + nombre + ", descripcion=" + descripcion + ", tipoCapitalizacion=" + tipoCapitalizacion
                 + ", formaCapitalizacion=" + formaCapitalizacion + ", maximoNumeroIntervinientes="
-                + maximoNumeroIntervinientes + ", fechaCreacion=" + fechaCreacion + ", fechaVigencia=" + fechaVigencia
-                + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
+                + maximoNumeroIntervinientes + ", fechaVigencia=" + fechaVigencia + ", estado=" + estado + "]";
     }
 
 }

@@ -1,6 +1,7 @@
-package com.banquito.core.baking.cuenta.dto;
+package com.banquito.core.baking.cuenta.dto.Builder;
 
 import com.banquito.core.baking.cuenta.domain.TasaInteres;
+import com.banquito.core.baking.cuenta.dto.TasaInteresDTO;
 
 public class TasaInteresBuilder {
 
@@ -8,10 +9,8 @@ public class TasaInteresBuilder {
         TasaInteresDTO dto = TasaInteresDTO.builder()
             .codTasaInteres(tasaInteres.getCodTasaInteres())
             .tasaInteres(tasaInteres.getTasaInteres())
-            .fechaCreacion(tasaInteres.getFechaCreacion())
             .fechaVigencia(tasaInteres.getFechaVigencia())
             .estado(tasaInteres.getEstado())
-            .fechaUltimoCambio(tasaInteres.getFechaUltimoCambio())
             .build();
         return dto;
     }
@@ -21,10 +20,8 @@ public class TasaInteresBuilder {
         TasaInteres tasaInteres = new TasaInteres();
         tasaInteres.setCodTasaInteres(dto.getCodTasaInteres());
         tasaInteres.setTasaInteres(dto.getTasaInteres());
-        tasaInteres.setFechaCreacion(dto.getFechaCreacion());
         tasaInteres.setFechaVigencia(dto.getFechaVigencia());
         tasaInteres.setEstado(dto.getEstado());
-        tasaInteres.setFechaUltimoCambio(dto.getFechaUltimoCambio());
         return tasaInteres;
 
     }

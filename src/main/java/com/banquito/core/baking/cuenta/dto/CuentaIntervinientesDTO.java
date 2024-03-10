@@ -9,12 +9,12 @@ import lombok.Data;
 @Data
 public class CuentaIntervinientesDTO {
 
-    private CuentaIntervinientesPKDTO pk;
+    private Integer codCuenta;
+    private Integer codClientePersona;
     private String tipoInterviniente;
     private Timestamp fechaInicio;
     private Timestamp fechaFin;
     private String estado;
-    private Timestamp fechaUltimoCambio;
     
     @Override
     public boolean equals(Object obj) {
@@ -25,26 +25,32 @@ public class CuentaIntervinientesDTO {
         if (getClass() != obj.getClass())
             return false;
         CuentaIntervinientesDTO other = (CuentaIntervinientesDTO) obj;
-        if (tipoInterviniente == null) {
-            if (other.tipoInterviniente != null)
+        if (codCuenta == null) {
+            if (other.codCuenta != null)
                 return false;
-        } else if (!tipoInterviniente.equals(other.tipoInterviniente))
+        } else if (!codCuenta.equals(other.codCuenta))
+            return false;
+        if (codClientePersona == null) {
+            if (other.codClientePersona != null)
+                return false;
+        } else if (!codClientePersona.equals(other.codClientePersona))
             return false;
         return true;
     }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((tipoInterviniente == null) ? 0 : tipoInterviniente.hashCode());
+        result = prime * result + ((codCuenta == null) ? 0 : codCuenta.hashCode());
+        result = prime * result + ((codClientePersona == null) ? 0 : codClientePersona.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
-        return "CuentaIntervinientesDTO [pk=" + pk + ", tipoInterviniente=" + tipoInterviniente + ", fechaInicio="
-                + fechaInicio + ", fechaFin=" + fechaFin + ", estado=" + estado + ", fechaUltimoCambio="
-                + fechaUltimoCambio + "]";
+        return "CuentaIntervinientesDTO [codCuenta=" + codCuenta + ", codClientePersona=" + codClientePersona
+                + ", tipoInterviniente=" + tipoInterviniente + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin
+                + ", estado=" + estado + "]";
     }
-
 }

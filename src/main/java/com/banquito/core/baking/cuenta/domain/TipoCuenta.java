@@ -56,9 +56,8 @@ public class TipoCuenta {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaUltimoCambio;
 
-    @Column(name = "ESTADO", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp estado;
+    @Column(name = "ESTADO", nullable = false, length = 3)
+    private String estado;
 
     @Version
     private Long version;

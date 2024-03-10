@@ -1,6 +1,7 @@
-package com.banquito.core.baking.cuenta.dto;
+package com.banquito.core.baking.cuenta.dto.Builder;
 
 import com.banquito.core.baking.cuenta.domain.Cuenta;
+import com.banquito.core.baking.cuenta.dto.CuentaDTO;
 
 public class CuentaBuilder {
 
@@ -16,10 +17,8 @@ public class CuentaBuilder {
                 .saldoDisponible(cuenta.getSaldoDisponible())
                 .montoMaximoRetiro(cuenta.getMontoMaximoRetiro())
                 .estado(cuenta.getEstado())
-                .fechaCreacion(cuenta.getFechaCreacion())
                 .fechaActivacion(cuenta.getFechaActivacion())
                 .fechaCierre(cuenta.getFechaCierre())
-                .fechaUltimoCambio(cuenta.getFechaUltimoCambio())
                 .build();
         return dto;
     }
@@ -38,7 +37,6 @@ public class CuentaBuilder {
         cuenta.setEstado(dto.getEstado());
         cuenta.setFechaActivacion(dto.getFechaActivacion());
         cuenta.setFechaCierre(dto.getFechaCierre());
-        cuenta.setFechaUltimoCambio(dto.getFechaUltimoCambio());
         return cuenta;
     }
 

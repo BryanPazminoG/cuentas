@@ -1,6 +1,7 @@
-package com.banquito.core.baking.cuenta.dto;
+package com.banquito.core.baking.cuenta.dto.Builder;
 
 import com.banquito.core.baking.cuenta.domain.PagoInteres;
+import com.banquito.core.baking.cuenta.dto.PagoInteresDTO;
 
 public class PagoInteresBuilder {
 

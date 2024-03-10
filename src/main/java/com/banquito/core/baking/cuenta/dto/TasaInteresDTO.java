@@ -10,13 +10,10 @@ import lombok.Data;
 @Data
 public class TasaInteresDTO {
     private Integer codTasaInteres;
-    private Integer codTipoCuenta;
     private BigDecimal tasaInteres;
-    private Timestamp fechaCreacion;
     private Timestamp fechaVigencia;
     private String estado;
-    private Timestamp fechaUltimoCambio;
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -31,26 +28,21 @@ public class TasaInteresDTO {
                 return false;
         } else if (!codTasaInteres.equals(other.codTasaInteres))
             return false;
-        if (codTipoCuenta == null) {
-            if (other.codTipoCuenta != null)
-                return false;
-        } else if (!codTipoCuenta.equals(other.codTipoCuenta))
-            return false;
         return true;
     }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((codTasaInteres == null) ? 0 : codTasaInteres.hashCode());
-        result = prime * result + ((codTipoCuenta == null) ? 0 : codTipoCuenta.hashCode());
         return result;
     }
+
     @Override
     public String toString() {
-        return "TasaInteresDTO [codTasaInteres=" + codTasaInteres + ", codTipoCuenta=" + codTipoCuenta
-                + ", tasaInteres=" + tasaInteres + ", fechaCreacion=" + fechaCreacion + ", fechaVigencia="
-                + fechaVigencia + ", estado=" + estado + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
+        return "TasaInteresDTO [codTasaInteres=" + codTasaInteres + ", tasaInteres=" + tasaInteres + ", fechaVigencia="
+                + fechaVigencia + ", estado=" + estado + "]";
     }
-    
+
 }

@@ -1,6 +1,7 @@
-package com.banquito.core.baking.cuenta.dto;
+package com.banquito.core.baking.cuenta.dto.Builder;
 
 import com.banquito.core.baking.cuenta.domain.Transaccion;
+import com.banquito.core.baking.cuenta.dto.TransaccionDTO;
 
 public class TransaccionBuilder {
 
@@ -16,10 +17,9 @@ public class TransaccionBuilder {
                 .tipoTransaccion(transaccion.getTipoTransaccion())
                 .canal(transaccion.getCanal())
                 .detalle(transaccion.getDetalle())
-                .fechaCreacion(transaccion.getFechaCreacion())
                 .estado(transaccion.getEstado())
                 .fechaAfectacion(transaccion.getFechaAfectacion())
-                .fechaUltimoCambio(transaccion.getFechaUltimoCambio()).build();
+                .build();
         return dto;
     }
 
@@ -36,6 +36,7 @@ public class TransaccionBuilder {
         transaccion.setCanal(dto.getCanal());
         transaccion.setDetalle(dto.getDetalle());
         transaccion.setEstado(dto.getEstado());
+        transaccion.setFechaAfectacion(dto.getFechaAfectacion());
         return transaccion;
     }
 

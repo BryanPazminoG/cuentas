@@ -19,7 +19,14 @@ public class TarjetaDTO {
     private String tipoTarjeta;
     private String redPago;
     private String estado;
-    private Timestamp fechaUltimoCambio;
+
+    @Override
+    public String toString() {
+        return "TarjetaDTO [codTarjeta=" + codTarjeta + ", codCuenta=" + codCuenta + ", numero=" + numero
+                + ", fechaEmision=" + fechaEmision + ", fechaVigencia=" + fechaVigencia + ", cvv=" + cvv
+                + ", tipoTarjeta=" + tipoTarjeta + ", redPago=" + redPago + ", estado=" + estado + "]";
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -29,32 +36,19 @@ public class TarjetaDTO {
         if (getClass() != obj.getClass())
             return false;
         TarjetaDTO other = (TarjetaDTO) obj;
-        if (codCuenta == null) {
-            if (other.codCuenta != null)
+        if (codTarjeta == null) {
+            if (other.codTarjeta != null)
                 return false;
-        } else if (!codCuenta.equals(other.codCuenta))
-            return false;
-        if (numero == null) {
-            if (other.numero != null)
-                return false;
-        } else if (!numero.equals(other.numero))
+        } else if (!codTarjeta.equals(other.codTarjeta))
             return false;
         return true;
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((codCuenta == null) ? 0 : codCuenta.hashCode());
-        result = prime * result + ((numero == null) ? 0 : numero.hashCode());
+        result = prime * result + ((codTarjeta == null) ? 0 : codTarjeta.hashCode());
         return result;
     }
-    @Override
-    public String toString() {
-        return "TarjetaDTO [codTarjeta=" + codTarjeta + ", codCuenta=" + codCuenta + ", numero=" + numero
-                + ", fechaEmision=" + fechaEmision + ", fechaVigencia=" + fechaVigencia + ", cvv=" + cvv
-                + ", tipoTarjeta=" + tipoTarjeta + ", redPago=" + redPago + ", estado=" + estado
-                + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
-    }
-
 }

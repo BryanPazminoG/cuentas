@@ -1,6 +1,7 @@
-package com.banquito.core.baking.cuenta.dto;
+package com.banquito.core.baking.cuenta.dto.Builder;
 
 import com.banquito.core.baking.cuenta.domain.Tarjeta;
+import com.banquito.core.baking.cuenta.dto.TarjetaDTO;
 
 public class TarjetaBuilder {
 
@@ -16,7 +17,6 @@ public class TarjetaBuilder {
         .tipoTarjeta(tarjeta.getTipoTarjeta())
         .redPago(tarjeta.getRedPago())
         .estado(tarjeta.getEstado())
-        .fechaUltimoCambio(tarjeta.getFechaUltimoCambio())
         .build();
         return dto;
     }
@@ -33,7 +33,6 @@ public class TarjetaBuilder {
         tarjeta.setTipoTarjeta(dto.getTipoTarjeta());
         tarjeta.setRedPago(dto.getRedPago());
         tarjeta.setEstado(dto.getEstado());
-        tarjeta.setFechaUltimoCambio(dto.getFechaUltimoCambio());
         return tarjeta;
 
     }
