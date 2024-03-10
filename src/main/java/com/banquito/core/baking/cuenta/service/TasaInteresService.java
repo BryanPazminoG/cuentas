@@ -1,12 +1,14 @@
 package com.banquito.core.baking.cuenta.service;
 
-import java.sql.Date;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.dao.TasaInteresRepository;
 import com.banquito.core.baking.cuenta.domain.TasaInteres;
+import com.banquito.core.baking.cuenta.dto.TasaInteresDTO;
+import com.banquito.core.baking.cuenta.dto.Builder.TasaInteresBuilder;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -21,22 +23,29 @@ public class TasaInteresService {
         this.tasaInteresRepository = tasaInteresRepository;
     }
 
-    public Optional<TasaInteres> obtenerPorId(Integer id) {
+    public Optional<TasaInteres> BuscarPorId(Integer id) {
         log.info("Buscando tasa de interés con ID: {}", id);
         return this.tasaInteresRepository.findById(id);
     }
 
-    public Iterable<TasaInteres> listarTodo() {
+    public Iterable<TasaInteres> Listar() {
         log.info("Listando todas las tasas de interés");
         return this.tasaInteresRepository.findAll();
     }
 
     @Transactional
-    public TasaInteres crear(TasaInteres tasaInteres) {
-        log.info("Creando nueva tasa de interés: {}", tasaInteres);
+    public TasaInteresDTO Crear(TasaInteresDTO dto) {
+        log.info("Creando nueva tasa de interes: {}", dto);
         try {
-            tasaInteres.setFechaCreacion(new Date(0));
-            return this.tasaInteresRepository.save(tasaInteres);
+            TasaInteres tasaInteres = TasaInteresBuilder.toTasaInteres(dto);
+            LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+            
+            tasaInteres.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
+            tasaInteres.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+
+            dto = TasaInteresBuilder.toDTO(this.tasaInteresRepository.save(tasaInteres));
+            log.info("La tasa de interes se ha creado exitosamente: {}", dto);
+            return dto;
         } catch (Exception e) {
             log.error("Error al crear tasa de interés", e);
             throw new CreacionException("Error al crear tasa de interés: " + e.getMessage(), e);
@@ -44,13 +53,7 @@ public class TasaInteresService {
     }
 
     @Transactional
-    public List<TasaInteres> obtenerPorTipoCuenta(Integer tipoCuenta) {
-        log.info("Buscando tasas de interés por tipo de cuenta: {}", tipoCuenta);
-        return this.tasaInteresRepository.findByCodTipoCuenta(tipoCuenta);
-    }
-
-    @Transactional
-    public void eliminar(Integer id) {
+    public void Eliminar(Integer id) {
         log.info("Eliminando tasa de interés con ID: {}", id);
         try {
             if (this.tasaInteresRepository.existsById(id)) {

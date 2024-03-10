@@ -1,12 +1,16 @@
 package com.banquito.core.baking.cuenta.service;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.dao.CuentaIntervinientesRepository;
 import com.banquito.core.baking.cuenta.domain.CuentaIntervinientes;
 import com.banquito.core.baking.cuenta.domain.CuentaIntervinientesPK;
+import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
+import com.banquito.core.baking.cuenta.mappers.CuentaIntervinienteMapper;
+
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,10 +25,15 @@ public class CuentaIntervinientesService {
 
     }
 
-    public Optional<CuentaIntervinientes> getById(Integer codCuenta, String codClientePersona) {
+    public CuentaIntervinientesDTO BuscarPorId(Integer codCuenta, Integer codClientePersona) {
         CuentaIntervinientesPK cuentaIntervinientePK = new CuentaIntervinientesPK(codCuenta, codClientePersona);
-        log.info("Se encontro la cuenta {} con el codigo cliente {}", codCuenta, codClientePersona);
-        return this.cuentaIntervinientesRepository.findById(cuentaIntervinientePK);
+        Optional<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesRepository.findById(cuentaIntervinientePK);
+        if(cuentaIntervinientes.isPresent()){
+            log.info("Se encontro la cuenta {} con el codigo cliente {}", codCuenta, codClientePersona);
+            return CuentaIntervinienteMapper.INSTANCE.toDTO(cuentaIntervinientes.get());
+        }else{
+            throw new RuntimeException("El interviniente" + codClientePersona + " en la cuenta " + codCuenta + " no existe");
+        }
     }
 
     public Iterable<CuentaIntervinientes> getByCuenta(Integer codCuenta) {
@@ -62,34 +71,38 @@ public class CuentaIntervinientesService {
     // }
 
     @Transactional
-    public void crear(CuentaIntervinientes dto) {
+    public CuentaIntervinientesDTO Crear(CuentaIntervinientesDTO dto) {
         try {
-            dto.setEstado("ACT");
-            dto.setFechaUltimoCambio(new Date());
+            CuentaIntervinientes cuentaIntervinientes = CuentaIntervinienteMapper.INSTANCE.toEntity(dto);
 
-            this.cuentaIntervinientesRepository.save(dto);
-            log.info("Se creo la cuenta intervinientes: {}", dto);
+            cuentaIntervinientes.setEstado("ACT");
+            LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+            cuentaIntervinientes.setFechaInicio(Timestamp.valueOf(fechaActualTimestamp));
+            cuentaIntervinientes.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+
+            log.info("Se creara la cuenta interviniente: {}", cuentaIntervinientes);
+            return CuentaIntervinienteMapper.INSTANCE.toDTO(this.cuentaIntervinientesRepository.save(cuentaIntervinientes));
         } catch (Exception e) {
             throw new CreacionException(
                     "Error en creacion de los Intervinientes en la cuenta: " + dto + ", Error: " + e, e);
         }
     }
 
-    public void actualizar(CuentaIntervinientes cuentaIntervinientesdto) {
+    @Transactional
+    public CuentaIntervinientesDTO Actualizar(CuentaIntervinientesDTO dto) {
         try {
-            Optional<CuentaIntervinientes> cuentaIntervinientesOptional = getById(
-                    cuentaIntervinientesdto.getPK().getCodCuenta(),
-                    cuentaIntervinientesdto.getPK().getCodClientePersona());
+            CuentaIntervinientesPK PK = new CuentaIntervinientesPK(dto.getCodCuenta(), dto.getCodClientePersona());
+            Optional<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesRepository.findById(PK);
 
-            if (cuentaIntervinientesOptional.isPresent()) {
-                cuentaIntervinientesdto.setFechaUltimoCambio(new Date());
-                cuentaIntervinientesdto.setEstado(cuentaIntervinientesOptional.get().getEstado());
-                this.cuentaIntervinientesRepository.save(cuentaIntervinientesdto);
-                log.info("La cuenta intervinientes {} se actualizo correctamente", cuentaIntervinientesdto);
+            if (cuentaIntervinientes.isPresent()) {
+                cuentaIntervinientes = Optional.ofNullable(CuentaIntervinienteMapper.INSTANCE.toEntity(dto));
+                LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                cuentaIntervinientes.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                log.info("La cuenta intervinientes {} se actualizara", cuentaIntervinientes.get());
+                return CuentaIntervinienteMapper.INSTANCE.toDTO(this.cuentaIntervinientesRepository.save(cuentaIntervinientes.get()));
             } else {
-                log.error(
-                        "La cuenta Intervinientes con id cuenta: " + cuentaIntervinientesdto.getPK().getCodCuenta() + ", id cliente: "
-                                + cuentaIntervinientesdto.getPK().getCodClientePersona() + " no existe");
+                throw new RuntimeException("La cuenta Intervinientes con id cuenta: " + dto.getCodCuenta() + ", id cliente: "
+                + dto.getCodClientePersona() + " no existe");
             }
         } catch (Exception e) {
             throw new CreacionException("Ocurrió un error al actualizar la cuenta, error: " + e.getMessage(), e);
@@ -97,10 +110,11 @@ public class CuentaIntervinientesService {
     }
     
 
-    public void borrar(Integer codCuenta, String codClientePersona) {
+    public void Eliminar(Integer codCuenta, Integer codClientePersona) {
         try {
             log.info("Intentando eliminar la cuenta intervinientes con id: {}-{}", codCuenta, codClientePersona);
-            Optional<CuentaIntervinientes> cuentaInteviniente = getById(codCuenta, codClientePersona);
+            CuentaIntervinientesPK PK = new CuentaIntervinientesPK(codCuenta, codClientePersona);
+            Optional<CuentaIntervinientes> cuentaInteviniente = cuentaIntervinientesRepository.findById(PK);
             if (cuentaInteviniente.isPresent()) {
                 log.info("Cuenta intervinientes encontrada. Eliminando...");
                 this.cuentaIntervinientesRepository.delete(cuentaInteviniente.get());

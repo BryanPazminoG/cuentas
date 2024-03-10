@@ -1,16 +1,16 @@
 package com.banquito.core.baking.cuenta.service;
 
 import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.dao.TarjetaRepository;
 import com.banquito.core.baking.cuenta.domain.Tarjeta;
-import com.banquito.core.baking.cuenta.dto.TarjetaBuilder;
 import com.banquito.core.baking.cuenta.dto.TarjetaDTO;
+import com.banquito.core.baking.cuenta.dto.Builder.TarjetaBuilder;
+
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +23,7 @@ public class TarjetaService {
         this.tarjetaRepository = tarjetaRepository;
     }
 
-    public List<TarjetaDTO> listarTodo() {
+    public List<TarjetaDTO> Listar() {
         log.info("Se va a obtener todas las tarjetas");
         List<TarjetaDTO> dtos = new ArrayList<>();
         for (Tarjeta tarjeta : this.tarjetaRepository.findAll()) {
@@ -32,22 +32,25 @@ public class TarjetaService {
         return dtos;
     }
 
-    public TarjetaDTO obtenerPorId(Integer codTarjeta) {
+    public TarjetaDTO BuscarPorId(Integer codTarjeta) {
 
         log.info("Obtener la tarjeta");
         Tarjeta tarjeta = this.tarjetaRepository.findById(codTarjeta).get();
-        log.info("Se ha obtenido la tarjeta {}",tarjeta);
-        
+        log.info("Se ha obtenido la tarjeta {}", tarjeta);
+
         return TarjetaBuilder.toDTO(tarjeta);
     }
 
     @Transactional
-    public Tarjeta crear(TarjetaDTO dto) {
+    public Tarjeta Crear(TarjetaDTO dto) {
         try {
 
-            Tarjeta tarjeta=TarjetaBuilder.toTarjeta(dto);
-            tarjeta.setFechaEmision(Timestamp.from(Instant.now()));
-            tarjeta.setFechaUltimoCambio(Timestamp.from(Instant.now()));
+            Tarjeta tarjeta = TarjetaBuilder.toTarjeta(dto);
+
+            LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+
+            tarjeta.setFechaEmision(Timestamp.valueOf(fechaActualTimestamp));
+            tarjeta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
             tarjeta.setEstado("ACT");
             return this.tarjetaRepository.save(tarjeta);
 
@@ -57,17 +60,25 @@ public class TarjetaService {
         }
     }
 
-@Transactional
-    public void actualizar(TarjetaDTO dto) {
+    @Transactional
+    public TarjetaDTO Actualizar(TarjetaDTO dto) {
         try {
-            Tarjeta tarjetaAux = this.tarjetaRepository.findById(dto.getCodTarjeta()).get();
-            Tarjeta tarjetaTmp = TarjetaBuilder.toTarjeta(dto);
-            Tarjeta tarjeta = TarjetaBuilder.copyTarjeta(tarjetaTmp, tarjetaAux);
-            tarjeta.setFechaUltimoCambio(new Date());
-            this.tarjetaRepository.save(tarjeta);
-            log.info("Se actualizaron los datos de la tarjeta: {}", tarjeta);
+            Optional<Tarjeta> tarjeta = tarjetaRepository.findById(dto.getCodTarjeta());
+
+            if (tarjeta.isPresent()) {
+                tarjeta = Optional.ofNullable(TarjetaBuilder.toTarjeta(dto));
+                
+                LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                tarjeta.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                
+                dto = TarjetaBuilder.toDTO(tarjetaRepository.save(tarjeta.get()));
+                log.info("Se actualizaron los datos de la tarjeta: {}", tarjeta.get());
+                return dto;
+            }else{
+                throw new RuntimeException("Error al buscar la tarjeta de credito con id: " + dto.getCodTarjeta());
+            }
         } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar la tarejta.", e);
+            throw new RuntimeException("Error al actualizar la tarjeta.", e);
         }
     }
 

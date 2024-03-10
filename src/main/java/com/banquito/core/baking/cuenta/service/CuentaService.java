@@ -1,14 +1,15 @@
 package com.banquito.core.baking.cuenta.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.domain.Cuenta;
-import com.banquito.core.baking.cuenta.dto.CuentaBuilder;
 import com.banquito.core.baking.cuenta.dto.CuentaDTO;
+import com.banquito.core.baking.cuenta.dto.Builder.CuentaBuilder;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class CuentaService {
         this.cuentaRepository = cuentaRepository;
     }
 
-    public List<CuentaDTO> listarTodo() {
+    public List<CuentaDTO> Listar() {
         log.info("Se va a obtener todos los tipos de cuentas");
         List<CuentaDTO> dtos = new ArrayList<>();
         for (Cuenta cuenta : this.cuentaRepository.findAll()) {
@@ -31,7 +32,7 @@ public class CuentaService {
         return dtos;
     }
 
-    public CuentaDTO obtenerPorId(Integer codCuenta) {
+    public CuentaDTO BuscarPorId(Integer codCuenta) {
         log.info("Obteniendo la Cuenta con ID: {}", codCuenta);
         Optional<Cuenta> optCuenta = this.cuentaRepository.findById(codCuenta);
         if (optCuenta.isPresent()) {
@@ -43,22 +44,26 @@ public class CuentaService {
     }
 
     @Transactional
-    public Integer crear(CuentaDTO dto) {
+    public CuentaDTO Crear(CuentaDTO dto) {
         try {
             Cuenta cuenta = CuentaBuilder.toCuenta(dto);
-            cuenta.setFechaCreacion(new Date());
-            cuenta.setFechaUltimoCambio(new Date());
+
+            LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+            cuenta.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
+            cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
             cuenta.setEstado("ACT");
-            Cuenta CuentaSave = this.cuentaRepository.save(cuenta);
+            cuenta.setFechaActivacion(Timestamp.valueOf(fechaActualTimestamp));
+
+            CuentaDTO CuentaDTO = CuentaBuilder.toDTO(cuentaRepository.save(cuenta));
             log.info("Se creo la cuenta: {}", cuenta);
-            return CuentaSave.getCodCuenta();
+            return CuentaDTO;
         } catch (Exception e) {
             throw new RuntimeException("Error al crear la cuenta.", e);
         }
     }
-    
+
     @Transactional
-    public void actualizar(CuentaDTO dto) {
+    public void Actualizar(CuentaDTO dto) {
         try {
             Cuenta cuentaAux = this.cuentaRepository.findById(dto.getCodCuenta()).get();
             if ("ACT".equals(cuentaAux.getEstado())) {
@@ -75,9 +80,8 @@ public class CuentaService {
         }
     }
 
-
     @Transactional
-    public void eliminar(Integer id) {
+    public void Eliminar(Integer id) {
         try {
             Optional<Cuenta> cuenta = this.cuentaRepository.findById(id);
             if (cuenta.isPresent()) {
@@ -120,7 +124,7 @@ public class CuentaService {
             throw new RuntimeException("Error al actualizar el balance de la cuenta.", e);
         }
     }
-    
+
     public List<CuentaDTO> obtenerCuentasCliente(String codCliente) {
         try {
             List<Cuenta> cuentas = this.cuentaRepository.findByCodCliente(codCliente);
@@ -137,6 +141,5 @@ public class CuentaService {
             throw new CreacionException("Ocurrió un error al obtener cuentas del cliente " + e.getMessage(), e);
         }
     }
-    
-    
+
 }

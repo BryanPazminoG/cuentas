@@ -1,16 +1,18 @@
 package com.banquito.core.baking.cuenta.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.banquito.core.baking.cuenta.dao.TipoCuentaRepository;
+
 import com.banquito.core.baking.cuenta.domain.TipoCuenta;
-import com.banquito.core.baking.cuenta.dto.TipoCuentaBuilder;
 import com.banquito.core.baking.cuenta.dto.TipoCuentaDTO;
+import com.banquito.core.baking.cuenta.dto.Builder.TipoCuentaBuilder;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,7 @@ public class TipoCuentaService {
         this.tipoCuentaRepository = tipoCuentaRepository;
     }
 
-    public TipoCuentaDTO obtenerPorId(String codTipoCuenta) {
+    public TipoCuentaDTO BuscarPorId(String codTipoCuenta) {
         log.info("Obteniendo tipo de cuenta con ID: {}", codTipoCuenta);
         Optional<TipoCuenta> optTipoCuenta = this.tipoCuentaRepository.findById(codTipoCuenta);
         if (optTipoCuenta.isPresent()) {
@@ -35,7 +37,7 @@ public class TipoCuentaService {
         }
     }
     
-    public List<TipoCuentaDTO> listarTodo() {
+    public List<TipoCuentaDTO> Listar() {
         log.info("Se va a obtener todos los tipos de cuentas");
         List<TipoCuentaDTO> dtos = new ArrayList<>();
         for (TipoCuenta tipoCuenta : this.tipoCuentaRepository.findAll()) {
@@ -45,27 +47,36 @@ public class TipoCuentaService {
     }
 
     @Transactional
-    public void crear(TipoCuentaDTO dto) {
+    public TipoCuentaDTO Crear(TipoCuentaDTO dto) {
         try {
             TipoCuenta tipoCuenta = TipoCuentaBuilder.toTipoCuenta(dto);
-            tipoCuenta.setFechaCreacion(new Date());
-            tipoCuenta.setFechaUltimoCambio(new Date());
-            this.tipoCuentaRepository.save(tipoCuenta);
+            LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+            tipoCuenta.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
+            tipoCuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+            dto = TipoCuentaBuilder.toDTO(this.tipoCuentaRepository.save(tipoCuenta));
             log.info("Se creo el tipo de cuenta: {}", tipoCuenta);
+            return dto;
         } catch (Exception e) {
             throw new RuntimeException("Error al crear el tipo de cuenta.", e);
         }
     }
 
     @Transactional
-    public void actualizar(TipoCuentaDTO dto) {
+    public TipoCuentaDTO Actualizar(TipoCuentaDTO dto) {
         try {
-            TipoCuenta tipoAux = this.tipoCuentaRepository.findById(dto.getCodTipoCuenta()).get();
-            TipoCuenta tipoCuentaTmp = TipoCuentaBuilder.toTipoCuenta(dto);
-            TipoCuenta tipoCuenta = TipoCuentaBuilder.copyTipoCuenta(tipoCuentaTmp, tipoAux);
-            tipoCuenta.setFechaUltimoCambio(new Date());
-            this.tipoCuentaRepository.save(tipoCuenta);
-            log.info("Se actualizaron los datos del tipo de cuenta: {}", tipoCuenta);
+            
+            Optional<TipoCuenta> tipoCuenta = tipoCuentaRepository.findById(dto.getCodTipoCuenta());
+            if(tipoCuenta.isPresent()){
+                tipoCuenta = Optional.ofNullable(TipoCuentaBuilder.toTipoCuenta(dto));
+
+                LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                tipoCuenta.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                dto = TipoCuentaBuilder.toDTO(this.tipoCuentaRepository.save(tipoCuenta.get()));
+                log.info("Se actualizaron los datos del tipo de cuenta: {}", tipoCuenta);
+                return dto;
+            }else{
+                throw new RuntimeException("No se encontro el tipo credito con el ID: " + dto.getCodTipoCuenta());
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error al actualizar tipo de cuenta.", e);
         }
