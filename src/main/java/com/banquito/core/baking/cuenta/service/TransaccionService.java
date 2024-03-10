@@ -75,7 +75,7 @@ public class TransaccionService {
             Transaccion transaccion = new Transaccion();
 
             if (cuentaRepository.findByNumeroCuenta(numCuenta) != null) {
-                Cuenta cuentaBeneficiario = cuentaRepository.findByNumeroCuenta(numCuenta);
+                Cuenta cuentaBeneficiario = cuentaRepository.findByNumeroCuenta(numCuenta).get();
 
                 cuentaBeneficiario.setSaldoContable(cuentaBeneficiario.getSaldoContable().add(valorDebe));
                 cuentaBeneficiario.setSaldoDisponible(cuentaBeneficiario.getSaldoDisponible().add(valorDebe));
@@ -124,7 +124,7 @@ public class TransaccionService {
             Transaccion transaccion = new Transaccion();
 
             if (cuentaRepository.findByNumeroCuenta(numCuenta) != null) {
-                Cuenta cuentaPropietario = cuentaRepository.findByNumeroCuenta(numCuenta);
+                Cuenta cuentaPropietario = cuentaRepository.findByNumeroCuenta(numCuenta).get();
 
                 if (cuentaPropietario.getSaldoDisponible().compareTo(valorHaber) > 0) {
                     LocalDateTime fechaActualTimestamp = LocalDateTime.now();
