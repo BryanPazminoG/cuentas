@@ -15,15 +15,14 @@ public class CuentaIntervinientesPK implements Serializable {
     @Column(name = "COD_CUENTA", nullable = false)
     private Integer codCuenta;
 
-    @Column(name = "COD_CLIENTE_PERSONA", nullable = false)
-    private Integer codClientePersona;
+    @Column(name = "COD_CLIENTE", nullable = false, length =32)
+    private String codCliente;
 
     public CuentaIntervinientesPK() {
     }
 
-    public CuentaIntervinientesPK(Integer codCuenta, Integer codClientePersona) {
+    public CuentaIntervinientesPK(Integer codCuenta, String codCliente) {
         this.codCuenta = codCuenta;
-        this.codClientePersona = codClientePersona;
+        this.codCliente = codCliente;
     }
-    
 }

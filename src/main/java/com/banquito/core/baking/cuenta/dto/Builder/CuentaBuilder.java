@@ -10,7 +10,6 @@ public class CuentaBuilder {
         CuentaDTO dto = CuentaDTO.builder()
                 .codCuenta(cuenta.getCodCuenta())
                 .codTipoCuenta(cuenta.getCodTipoCuenta())
-                .codUnico(cuenta.getCodUnico())
                 .codCliente(cuenta.getCodCliente())
                 .numeroCuenta(cuenta.getNumeroCuenta())
                 .saldoContable(cuenta.getSaldoContable())
@@ -28,7 +27,6 @@ public class CuentaBuilder {
         Cuenta cuenta = new Cuenta();
         cuenta.setCodCuenta(dto.getCodCuenta());
         cuenta.setCodTipoCuenta(dto.getCodTipoCuenta());
-        cuenta.setCodUnico(dto.getCodUnico());
         cuenta.setCodCliente(dto.getCodCliente());
         cuenta.setNumeroCuenta(dto.getNumeroCuenta());
         cuenta.setSaldoContable(dto.getSaldoContable());

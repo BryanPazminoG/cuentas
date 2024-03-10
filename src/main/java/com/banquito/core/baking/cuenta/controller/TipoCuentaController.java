@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
                         "http://34.176.102.118:4203", "http://34.176.137.180:4204"})
 //@CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 @RestController
-@RequestMapping("/api/v1/tiposcuentas")
+@RequestMapping("/api/v1/tiposCuentas")
 public class TipoCuentaController {
     
     private final TipoCuentaService tipoCuentaService;
@@ -33,28 +32,43 @@ public class TipoCuentaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TipoCuentaDTO>> listarTiposCuentas() {
-        log.info("Obteniendo listado de tipos de cuentas");
-        return ResponseEntity.ok(this.tipoCuentaService.Listar());
+    public ResponseEntity<List<TipoCuentaDTO>> Listar() {
+        try {
+            log.info("Obteniendo listado de tipos de cuentas");
+            return ResponseEntity.ok(this.tipoCuentaService.Listar());
+        } catch(RuntimeException rte) {
+            log.error("Error al listar los tipo de cuentas", rte);
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TipoCuentaDTO> buscarPorId(@PathVariable(name = "id") String id) {
-        log.info("Obteniendo el tipo de cuenta con ID: {}", id);
+    @GetMapping("/estados/{estado}")
+    public ResponseEntity<List<TipoCuentaDTO>> ObtenerPorEstado(@PathVariable(name = "estado") String estado) {
         try {
-            return ResponseEntity.ok(this.tipoCuentaService.BuscarPorId(id));
+            log.info("Obteniendo tipo cuenta por el estado: {}", estado);
+            return ResponseEntity.ok(this.tipoCuentaService.ListarPorEstado(estado));
+        } catch (RuntimeException rte) {
+            log.error("Error al obtener el tipo cuenta", rte);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{codTipoCuenta}")
+    public ResponseEntity<TipoCuentaDTO> ObtenerPorId(@PathVariable(name = "codTipoCuenta") String codTipoCuenta) {
+        try {
+            log.info("Obteniendo el tipo de cuenta con ID: {}", codTipoCuenta);
+            return ResponseEntity.ok(this.tipoCuentaService.BuscarPorId(codTipoCuenta));
         } catch(RuntimeException rte) {
-            log.error("Error al obtener tipo de cuenta por ID", rte);
+            log.error("Error al obtener el tipo de cuenta", rte);
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody TipoCuentaDTO tipoCuenta) {
-        log.info("Se va a crear el tipo de cuenta: {}", tipoCuenta);
+    public ResponseEntity<TipoCuentaDTO> Crear(@RequestBody TipoCuentaDTO tipoCuenta) {
         try {
-            this.tipoCuentaService.Crear(tipoCuenta);
-            return ResponseEntity.noContent().build();
+            log.info("Creando el tipo de cuenta: {}", tipoCuenta);
+            return ResponseEntity.ok(this.tipoCuentaService.Crear(tipoCuenta));
         } catch(RuntimeException rte) {
             log.error("Error al crear el tipo de cuenta", rte);
             return ResponseEntity.badRequest().build();
@@ -62,25 +76,12 @@ public class TipoCuentaController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> actualizar(@RequestBody TipoCuentaDTO tipoCuenta) {
-        log.info("Se va a actualizar el tipo de cuenta: {}", tipoCuenta);
+    public ResponseEntity<TipoCuentaDTO> Actualizar(@RequestBody TipoCuentaDTO tipoCuenta) {
         try {
-            this.tipoCuentaService.Actualizar(tipoCuenta);
-            return ResponseEntity.noContent().build();
+            log.info("Actualizando el tipo de cuenta: {}", tipoCuenta);
+            return ResponseEntity.ok(this.tipoCuentaService.Actualizar(tipoCuenta));
         } catch(RuntimeException rte) {
             log.error("Error al actualizar el tipo de cuenta", rte);
-            return ResponseEntity.badRequest().build();
-        }
-    }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable(name = "id") String id) {
-        log.info("Se va a eliminar el tipo de cuenta con ID: {}", id);
-        try {
-            this.tipoCuentaService.eliminar(id);
-            return ResponseEntity.noContent().build();
-        } catch(RuntimeException rte) {
-            log.error("Error al eliminar el tipo de cuenta", rte);
             return ResponseEntity.badRequest().build();
         }
     }

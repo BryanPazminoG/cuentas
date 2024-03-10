@@ -38,17 +38,7 @@ public class TarjetaService {
         }
     }
 
-    public List<TarjetaDTO> BuscarPorCuenta(Integer codCuenta) {
-        List<TarjetaDTO> listDTO = new ArrayList<>();
-        List<Tarjeta> listTarjeta = this.tarjetaRepository.findByCodCuentaOrderByFechaEmision(codCuenta);
-        for (Tarjeta tarjeta : listTarjeta) {
-            listDTO.add(TarjetaBuilder.toDTO(tarjeta));
-        }
-        log.info("Se encontro el listando de las tarjetas de la cuenta {} : {}", codCuenta, listDTO);
-        return listDTO;
-    }
-
-    public TarjetaDTO BuscarPorTarjeta(String numero) {
+    public TarjetaDTO BuscarPorNumero(String numero) {
         Optional<Tarjeta> tarjeta = this.tarjetaRepository.findByNumero(numero);
         if (tarjeta.isPresent()) {
             log.info("La tarjeta con el numero: {} se ha encontrado EXITOSAMENTE: {}", numero);
@@ -58,6 +48,16 @@ public class TarjetaService {
             log.error("La tarjeta con el numero: {} no existe", numero);
             throw new RuntimeException("No se encontro la tarjeta con el numero: " + numero);
         }
+    }
+
+    public List<TarjetaDTO> BuscarPorCuenta(Integer codCuenta) {
+        List<TarjetaDTO> listDTO = new ArrayList<>();
+        List<Tarjeta> listTarjeta = this.tarjetaRepository.findByCodCuentaOrderByFechaEmision(codCuenta);
+        for (Tarjeta tarjeta : listTarjeta) {
+            listDTO.add(TarjetaBuilder.toDTO(tarjeta));
+        }
+        log.info("Se encontro el listando de las tarjetas de la cuenta {} : {}", codCuenta, listDTO);
+        return listDTO;
     }
 
     @Transactional

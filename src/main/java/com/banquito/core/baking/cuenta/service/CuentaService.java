@@ -10,7 +10,7 @@ import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.domain.Cuenta;
 import com.banquito.core.baking.cuenta.dto.CuentaDTO;
 import com.banquito.core.baking.cuenta.dto.Builder.CuentaBuilder;
-import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -24,24 +24,40 @@ public class CuentaService {
         this.cuentaRepository = cuentaRepository;
     }
 
-    public List<CuentaDTO> Listar() {
-        log.info("Se va a obtener todos los tipos de cuentas");
-        List<CuentaDTO> dtos = new ArrayList<>();
-        for (Cuenta cuenta : this.cuentaRepository.findAll()) {
-            dtos.add(CuentaBuilder.toDTO(cuenta));
+    public CuentaDTO BuscarPorId(Integer codCuenta) {
+        Optional<Cuenta> cuenta = this.cuentaRepository.findById(codCuenta);
+        if (cuenta.isPresent()) {
+            log.info("Cuenta con ID: {} encontrada", codCuenta);
+            CuentaDTO dto = CuentaBuilder.toDTO(cuenta.get());
+            return dto;
+        } else {
+            log.error("La cuenta con ID {} no existe", codCuenta);
+            throw new RuntimeException("No se encontro la cuenta");
         }
-        return dtos;
     }
 
-    public CuentaDTO BuscarPorId(Integer codCuenta) {
-        log.info("Obteniendo la Cuenta con ID: {}", codCuenta);
-        Optional<Cuenta> optCuenta = this.cuentaRepository.findById(codCuenta);
-        if (optCuenta.isPresent()) {
-            log.info("Cuenta obtenida: {}", optCuenta.get());
-            return CuentaBuilder.toDTO(optCuenta.get());
+    public CuentaDTO BuscarPorNumeroCuenta(String numeroCuenta) {
+        Optional<Cuenta> cuenta = this.cuentaRepository.findByNumeroCuenta(numeroCuenta);
+        if (cuenta.isPresent()) {
+            log.info("Cuenta con el numero de cuenta: {} encontrada", cuenta);
+            CuentaDTO dto = CuentaBuilder.toDTO(cuenta.get());
+            return dto;
         } else {
-            throw new RuntimeException("No se encontro la cuenta con ID: " + codCuenta);
+            log.error("La cuenta con el numero de cuenta {} no existe", numeroCuenta);
+            throw new RuntimeException("No se encontro la cuenta: ");
         }
+    }
+
+    public List<CuentaDTO> BuscarPorCliente(String codCliente) {
+        
+        List<CuentaDTO> listDTO = new ArrayList<>();
+        List<Cuenta> cuentas = this.cuentaRepository.findByCodClienteOrderByFechaCreacion(codCliente);
+
+        for (Cuenta cuenta : cuentas) {
+            listDTO.add(CuentaBuilder.toDTO(cuenta));
+        }
+        log.info("Se encontro el listando de las cuentas del cliente: {}", codCliente);
+        return listDTO;
     }
 
     @Transactional
@@ -54,6 +70,7 @@ public class CuentaService {
             cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
             cuenta.setEstado("ACT");
             cuenta.setFechaActivacion(Timestamp.valueOf(fechaActualTimestamp));
+            cuenta.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
 
             CuentaDTO CuentaDTO = CuentaBuilder.toDTO(cuentaRepository.save(cuenta));
             log.info("Se creo la cuenta: {}", cuenta);
@@ -64,83 +81,42 @@ public class CuentaService {
     }
 
     @Transactional
-    public void Actualizar(CuentaDTO dto) {
+    public CuentaDTO Actualizar(CuentaDTO dto) {
         try {
-            Cuenta cuentaAux = this.cuentaRepository.findById(dto.getCodCuenta()).get();
-            if ("ACT".equals(cuentaAux.getEstado())) {
-                Cuenta cuentaTmp = CuentaBuilder.toCuenta(dto);
-                Cuenta cuenta = CuentaBuilder.copyCuenta(cuentaTmp, cuentaAux);
-                cuenta.setEstado("ACT");
-                this.cuentaRepository.save(cuenta);
-                log.info("Se actualizaron los datos de la cuenta: {}", cuenta);
-            } else {
-                log.error("No se puede actualizar, cuenta: {} se encuentra INACTIVO", cuentaAux);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar el cliente.", e);
-        }
-    }
+            Optional<Cuenta> cuenta = this.cuentaRepository.findById(dto.getCodCuenta());
 
-    @Transactional
-    public void Eliminar(Integer id) {
-        try {
-            Optional<Cuenta> cuenta = this.cuentaRepository.findById(id);
             if (cuenta.isPresent()) {
-                this.cuentaRepository.delete(cuenta.get());
-                log.info("Se elimino con exito la cuenta: {}", cuenta);
+                cuenta = Optional.ofNullable(CuentaBuilder.toCuenta(dto));
+                LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                cuenta.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                dto = CuentaBuilder.toDTO(this.cuentaRepository.save(cuenta.get()));
+                log.info("Se actualizaron los datos de la cuenta: {} Exitosamente", dto);
+                return dto;
             } else {
-                throw new RuntimeException("La cuenta con ID: " + id + " no existe");
+                log.error("No existe la cuenta con el ID: {}", dto.getCodCuenta());
+                throw new RuntimeException("La cuenta no existe");
             }
-        } catch (Exception e) {
-            throw new CreacionException("Ocurrio un error al eliminar la cuenta, error: " + e.getMessage(), e);
-        }
-    }
 
-    public CuentaDTO obtenerPorNumeroCuenta(String numeroCuenta) {
-        log.info("Obteniendo la Cuenta: {}", numeroCuenta);
-        Cuenta cuenta = this.cuentaRepository.findByNumeroCuenta(numeroCuenta);
-        if (cuenta != null) {
-            log.info("Cuenta obtenida: {}", cuenta);
-            return CuentaBuilder.toDTO(cuenta);
-        } else {
-            throw new RuntimeException("No se encontro la cuenta: " + numeroCuenta);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar el cuenta.", e);
         }
     }
 
     @Transactional
-    public void actualizarBalance(CuentaDTO dto) {
+    public void ActualizarBalance(CuentaDTO dto) {
         try {
-            Cuenta cuentaAux = this.cuentaRepository.findById(dto.getCodCuenta()).get();
-            if (cuentaAux != null) {
-                Cuenta cuentaTmp = CuentaBuilder.toCuenta(dto);
-                Cuenta cuenta = CuentaBuilder.copyCuenta(cuentaTmp, cuentaAux);
-                cuenta.setSaldoDisponible(cuentaAux.getSaldoDisponible().add(cuenta.getSaldoDisponible()));
-                cuenta.setSaldoContable(cuentaAux.getSaldoContable().add(cuenta.getSaldoContable()));
-                this.cuentaRepository.save(cuenta);
-                log.info("Se actualizo el balance de la cuenta: {}", cuenta);
+            Optional<Cuenta> cuenta = this.cuentaRepository.findById(dto.getCodCuenta());
+            if (cuenta.isPresent()) {
+                cuenta.get().setSaldoDisponible(cuenta.get().getSaldoDisponible().add(dto.getSaldoDisponible()));
+                cuenta.get().setSaldoContable(cuenta.get().getSaldoContable().add(dto.getSaldoContable()));
+                this.cuentaRepository.save(cuenta.get());
+                log.info("Se actualizo el balance de la cuenta: {}", cuenta.get().getCodCuenta());
             } else {
+                log.error("No existe la cuenta con el ID: {}", dto.getCodCuenta());
                 throw new RuntimeException("La cuenta con ID: " + dto.getCodCuenta() + " no existe");
             }
         } catch (Exception e) {
             throw new RuntimeException("Error al actualizar el balance de la cuenta.", e);
         }
     }
-
-    public List<CuentaDTO> obtenerCuentasCliente(String codCliente) {
-        try {
-            List<Cuenta> cuentas = this.cuentaRepository.findByCodCliente(codCliente);
-            if (!cuentas.isEmpty()) {
-                List<CuentaDTO> cuentasDTO = new ArrayList<>();
-                for (Cuenta cuenta : cuentas) {
-                    cuentasDTO.add(CuentaBuilder.toDTO(cuenta));
-                }
-                return cuentasDTO;
-            } else {
-                throw new RuntimeException("El cliente no tiene cuentas asociadas.");
-            }
-        } catch (Exception e) {
-            throw new CreacionException("Ocurrió un error al obtener cuentas del cliente " + e.getMessage(), e);
-        }
-    }
-
 }

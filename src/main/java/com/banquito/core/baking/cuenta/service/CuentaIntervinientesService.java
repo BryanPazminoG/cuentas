@@ -30,17 +30,17 @@ public class CuentaIntervinientesService {
 
     }
 
-    public CuentaIntervinientesDTO BuscarPorId(Integer codCuenta, Integer codClientePersona) {
-        CuentaIntervinientesPK cuentaIntervinientePK = new CuentaIntervinientesPK(codCuenta, codClientePersona);
+    public CuentaIntervinientesDTO BuscarPorId(Integer codCuenta, String codCliente) {
+        CuentaIntervinientesPK cuentaIntervinientePK = new CuentaIntervinientesPK(codCuenta, codCliente);
         Optional<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesRepository
                 .findById(cuentaIntervinientePK);
         if (cuentaIntervinientes.isPresent()) {
-            log.info("Se encontro la cuenta {} con el codigo cliente {}", codCuenta, codClientePersona);
+            log.info("Se encontro la cuenta {} con el codigo cliente {}", codCuenta, codCliente);
             return CuentaIntervinienteMapper.INSTANCE.toDTO(cuentaIntervinientes.get());
         } else {
-            log.error("No existe la cuenta {} con el codigo cliente {}", codCuenta, codClientePersona);
+            log.error("No existe la cuenta {} con el codigo cliente {}", codCuenta, codCliente);
             throw new RuntimeException(
-                    "El interviniente" + codClientePersona + " en la cuenta " + codCuenta + " no existe");
+                    "El interviniente" + codCliente + " en la cuenta " + codCuenta + " no existe");
         }
     }
 
@@ -56,15 +56,15 @@ public class CuentaIntervinientesService {
         return listDTO;
     }
 
-    public List<CuentaIntervinientesDTO> BuscarPorCliente(Integer CodClientePersona) {
+    public List<CuentaIntervinientesDTO> BuscarPorCliente(String CodCliente) {
         List<CuentaIntervinientesDTO> listDTO = new ArrayList<>();
         List<CuentaIntervinientes> listCuentaIntervinientes = this.cuentaIntervinientesRepository
-                .findByPKCodClientePersona(CodClientePersona);
+                .findByPKCodCliente(CodCliente);
         ;
         for (CuentaIntervinientes cuentaIntervinientes : listCuentaIntervinientes) {
             listDTO.add(CuentaIntervinienteMapper.INSTANCE.toDTO(cuentaIntervinientes));
         }
-        log.info("Se encontro los intervinientes de la cuenta: {}", CodClientePersona);
+        log.info("Se encontro los intervinientes de la cuenta: {}", CodCliente);
         return listDTO;
     }
 
@@ -103,7 +103,7 @@ public class CuentaIntervinientesService {
     @Transactional
     public CuentaIntervinientesDTO Actualizar(CuentaIntervinientesDTO dto) {
         try {
-            CuentaIntervinientesPK PK = new CuentaIntervinientesPK(dto.getCodCuenta(), dto.getCodClientePersona());
+            CuentaIntervinientesPK PK = new CuentaIntervinientesPK(dto.getCodCuenta(), dto.getCodCliente());
             Optional<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesRepository.findById(PK);
 
             if (cuentaIntervinientes.isPresent()) {
@@ -116,10 +116,10 @@ public class CuentaIntervinientesService {
                 return dto;
             } else {
                 log.error("No existe la cuenta intervinientes con cod_cuenta: {} y cod_cliente {}", dto.getCodCuenta(),
-                        dto.getCodClientePersona());
+                        dto.getCodCliente());
                 throw new RuntimeException(
                         "La cuenta Intervinientes con id cuenta: " + dto.getCodCuenta() + ", id cliente: "
-                                + dto.getCodClientePersona() + " no existe");
+                                + dto.getCodCliente() + " no existe");
             }
         } catch (Exception e) {
             log.error("Error al actualizar la cuenta interviente");
@@ -129,18 +129,18 @@ public class CuentaIntervinientesService {
     }
 
     @Transactional
-    public void Eliminar(Integer codCuenta, Integer codClientePersona) {
+    public void Eliminar(Integer codCuenta, String codCliente) {
         try {
-            CuentaIntervinientesPK PK = new CuentaIntervinientesPK(codCuenta, codClientePersona);
+            CuentaIntervinientesPK PK = new CuentaIntervinientesPK(codCuenta, codCliente);
             Optional<CuentaIntervinientes> cuentaInteviniente = cuentaIntervinientesRepository.findById(PK);
             if (cuentaInteviniente.isPresent()) {
                 log.info("Cuenta intervinientes encontrada. Eliminando...");
                 this.cuentaIntervinientesRepository.delete(cuentaInteviniente.get());
                 log.info("Cuenta intervinientes Eliminada");
             } else {
-                log.error("La cuenta Intervinientes con id {} - {} no existe", codCuenta, codClientePersona);
+                log.error("La cuenta Intervinientes con id {} - {} no existe", codCuenta, codCliente);
                 throw new RuntimeException(
-                        "La cuenta Intervinientes con id" + codCuenta + "-" + codClientePersona + " no existe");
+                        "La cuenta Intervinientes con id" + codCuenta + "-" + codCliente + " no existe");
             }
         } catch (Exception e) {
             throw new CreacionException(
