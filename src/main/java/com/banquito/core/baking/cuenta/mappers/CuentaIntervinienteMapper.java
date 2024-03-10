@@ -9,12 +9,12 @@ import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
 
 @Mapper(componentModel = "spring")
 public interface CuentaIntervinienteMapper {
-    CuentaIntervinienteMapper INSTANCE = Mappers.getMapper( CuentaIntervinienteMapper.class );
+    CuentaIntervinienteMapper mapper = Mappers.getMapper( CuentaIntervinienteMapper.class );
 
-    CuentaIntervinientesDTO toDTO(CuentaIntervinientes entity);
-    @Mappings({
-        @Mapping(target = "", ignore = true),
-    })
     CuentaIntervinientes toEntity(CuentaIntervinientesDTO dto);
-    
+    @Mappings({
+        @Mapping(target = "fechaUltimoCambio", ignore = true),
+        @Mapping(target = "version", ignore = true)
+    })
+    CuentaIntervinientesDTO toDTO(CuentaIntervinientes entity);
 }

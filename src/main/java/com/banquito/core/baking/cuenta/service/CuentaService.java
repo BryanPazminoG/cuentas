@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.domain.Cuenta;
 import com.banquito.core.baking.cuenta.dto.CuentaDTO;
-import com.banquito.core.baking.cuenta.dto.Builder.CuentaBuilder;
+// import com.banquito.core.baking.cuenta.dto.Builder.CuentaBuilder;
+import com.banquito.core.baking.cuenta.mappers.CuentaMapper;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 import jakarta.transaction.Transactional;
@@ -28,7 +30,8 @@ public class CuentaService {
         Optional<Cuenta> cuenta = this.cuentaRepository.findById(codCuenta);
         if (cuenta.isPresent()) {
             log.info("Cuenta con ID: {} encontrada", codCuenta);
-            CuentaDTO dto = CuentaBuilder.toDTO(cuenta.get());
+            //CuentaDTO dto = CuentaBuilder.toDTO(cuenta.get());
+            CuentaDTO dto = CuentaMapper.mapper.toDTO(cuenta.get());
             return dto;
         } else {
             log.error("La cuenta con ID {} no existe", codCuenta);
@@ -40,7 +43,8 @@ public class CuentaService {
         Optional<Cuenta> cuenta = this.cuentaRepository.findByNumeroCuenta(numeroCuenta);
         if (cuenta.isPresent()) {
             log.info("Cuenta con el numero de cuenta: {} encontrada", cuenta);
-            CuentaDTO dto = CuentaBuilder.toDTO(cuenta.get());
+            //CuentaDTO dto = CuentaBuilder.toDTO(cuenta.get());
+            CuentaDTO dto = CuentaMapper.mapper.toDTO(cuenta.get());
             return dto;
         } else {
             log.error("La cuenta con el numero de cuenta {} no existe", numeroCuenta);
@@ -54,7 +58,8 @@ public class CuentaService {
         List<Cuenta> cuentas = this.cuentaRepository.findByCodClienteOrderByFechaCreacion(codCliente);
 
         for (Cuenta cuenta : cuentas) {
-            listDTO.add(CuentaBuilder.toDTO(cuenta));
+            //listDTO.add(CuentaBuilder.toDTO(cuenta));
+            listDTO.add(CuentaMapper.mapper.toDTO(cuenta));
         }
         log.info("Se encontro el listando de las cuentas del cliente: {}", codCliente);
         return listDTO;
@@ -63,7 +68,8 @@ public class CuentaService {
     @Transactional
     public CuentaDTO Crear(CuentaDTO dto) {
         try {
-            Cuenta cuenta = CuentaBuilder.toCuenta(dto);
+            //Cuenta cuenta = CuentaBuilder.toCuenta(dto);
+            Cuenta cuenta = CuentaMapper.mapper.toEntity(dto);
 
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
             cuenta.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
@@ -72,7 +78,8 @@ public class CuentaService {
             cuenta.setFechaActivacion(Timestamp.valueOf(fechaActualTimestamp));
             cuenta.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
 
-            CuentaDTO CuentaDTO = CuentaBuilder.toDTO(cuentaRepository.save(cuenta));
+            //CuentaDTO CuentaDTO = CuentaBuilder.toDTO(cuentaRepository.save(cuenta));
+            CuentaDTO CuentaDTO = CuentaMapper.mapper.toDTO(cuentaRepository.save(cuenta));
             log.info("Se creo la cuenta: {}", cuenta);
             return CuentaDTO;
         } catch (Exception e) {
@@ -86,10 +93,12 @@ public class CuentaService {
             Optional<Cuenta> cuenta = this.cuentaRepository.findById(dto.getCodCuenta());
 
             if (cuenta.isPresent()) {
-                cuenta = Optional.ofNullable(CuentaBuilder.toCuenta(dto));
+                //cuenta = Optional.ofNullable(CuentaBuilder.toCuenta(dto));
+                cuenta = Optional.ofNullable(CuentaMapper.mapper.toEntity(dto));
                 LocalDateTime fechaActualTimestamp = LocalDateTime.now();
                 cuenta.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                dto = CuentaBuilder.toDTO(this.cuentaRepository.save(cuenta.get()));
+                //dto = CuentaBuilder.toDTO(this.cuentaRepository.save(cuenta.get()));
+                dto = CuentaMapper.mapper.toDTO(this.cuentaRepository.save(cuenta.get()));
                 log.info("Se actualizaron los datos de la cuenta: {} Exitosamente", dto);
                 return dto;
             } else {

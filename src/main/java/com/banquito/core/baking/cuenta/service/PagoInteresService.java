@@ -10,7 +10,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.domain.PagoInteres;
 import com.banquito.core.baking.cuenta.dto.PagoInteresDTO;
-import com.banquito.core.baking.cuenta.dto.Builder.PagoInteresBuilder;
+// import com.banquito.core.baking.cuenta.dto.Builder.PagoInteresBuilder;
+import com.banquito.core.baking.cuenta.mappers.PagoInteresMapper;
 import com.banquito.core.baking.cuenta.dao.PagoInteresRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +31,8 @@ public class PagoInteresService {
         Optional<PagoInteres> pagoInteres = this.pagoInteresRepository.findById(codPagoInteres);
         if (pagoInteres.isPresent()) {
             log.info("El pago interes con ID: {} se ha encontrado EXITOSAMENTE: {}", pagoInteres.get());
-            PagoInteresDTO dto = PagoInteresBuilder.toDTO(pagoInteres.get());
+            //PagoInteresDTO dto = PagoInteresBuilder.toDTO(pagoInteres.get());
+            PagoInteresDTO dto = PagoInteresMapper.mapper.toDTO(pagoInteres.get());
             return dto;
         } else {
             log.error("El pago interes con ID: {} no existe", codPagoInteres);
@@ -43,7 +45,8 @@ public class PagoInteresService {
         List<PagoInteresDTO> listDTO = new ArrayList<>();
         List<PagoInteres> listPagoInteres = this.pagoInteresRepository.findByCodCuentaOrderByFechaEjecucion(codCuenta);
         for (PagoInteres pagoInteres : listPagoInteres) {
-            listDTO.add(PagoInteresBuilder.toDTO(pagoInteres));
+            //listDTO.add(PagoInteresBuilder.toDTO(pagoInteres));
+            listDTO.add(PagoInteresMapper.mapper.toDTO(pagoInteres));
         }
         log.info("Se encontro el listando de los pagos interes de la cuenta {} : {}", codCuenta, listDTO);
         return listDTO;

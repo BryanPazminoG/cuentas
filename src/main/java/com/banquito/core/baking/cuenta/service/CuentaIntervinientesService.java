@@ -36,7 +36,7 @@ public class CuentaIntervinientesService {
                 .findById(cuentaIntervinientePK);
         if (cuentaIntervinientes.isPresent()) {
             log.info("Se encontro la cuenta {} con el codigo cliente {}", codCuenta, codCliente);
-            return CuentaIntervinienteMapper.INSTANCE.toDTO(cuentaIntervinientes.get());
+            return CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes.get());
         } else {
             log.error("No existe la cuenta {} con el codigo cliente {}", codCuenta, codCliente);
             throw new RuntimeException(
@@ -50,7 +50,7 @@ public class CuentaIntervinientesService {
                 .findByPKCodCuenta(codCuenta);
         ;
         for (CuentaIntervinientes cuentaIntervinientes : listCuentaIntervinientes) {
-            listDTO.add(CuentaIntervinienteMapper.INSTANCE.toDTO(cuentaIntervinientes));
+            listDTO.add(CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes));
         }
         log.info("Se encontro las cuentas del interviniente: {}", codCuenta);
         return listDTO;
@@ -62,7 +62,7 @@ public class CuentaIntervinientesService {
                 .findByPKCodCliente(CodCliente);
         ;
         for (CuentaIntervinientes cuentaIntervinientes : listCuentaIntervinientes) {
-            listDTO.add(CuentaIntervinienteMapper.INSTANCE.toDTO(cuentaIntervinientes));
+            listDTO.add(CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes));
         }
         log.info("Se encontro los intervinientes de la cuenta: {}", CodCliente);
         return listDTO;
@@ -73,7 +73,7 @@ public class CuentaIntervinientesService {
                 || "SUS".equals(estado) || "LIB".equals(estado) || "CES".equals(estado)) {
             List<CuentaIntervinientesDTO> listDTO = new ArrayList<>();
             for (CuentaIntervinientes cuentaIntervinientes : this.cuentaIntervinientesRepository.findByEstado(estado)) {
-                listDTO.add(CuentaIntervinienteMapper.INSTANCE.toDTO(cuentaIntervinientes));
+                listDTO.add(CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes));
             }
             log.info("Se encontro los intervinientes con el estado: {}", estado);
             return listDTO;
@@ -86,11 +86,11 @@ public class CuentaIntervinientesService {
     @Transactional
     public CuentaIntervinientesDTO Crear(CuentaIntervinientesDTO dto) {
         try {
-            CuentaIntervinientes cuentaIntervinientes = CuentaIntervinienteMapper.INSTANCE.toEntity(dto);
+            CuentaIntervinientes cuentaIntervinientes = CuentaIntervinienteMapper.mapper.toEntity(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
             cuentaIntervinientes.setFechaInicio(Timestamp.valueOf(fechaActualTimestamp));
             cuentaIntervinientes.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-            dto = CuentaIntervinienteMapper.INSTANCE
+            dto = CuentaIntervinienteMapper.mapper
                     .toDTO(this.cuentaIntervinientesRepository.save(cuentaIntervinientes));
             log.info("Se creo la cuenta interviniente: {}", dto);
             return dto;
@@ -107,10 +107,10 @@ public class CuentaIntervinientesService {
             Optional<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesRepository.findById(PK);
 
             if (cuentaIntervinientes.isPresent()) {
-                cuentaIntervinientes = Optional.ofNullable(CuentaIntervinienteMapper.INSTANCE.toEntity(dto));
+                cuentaIntervinientes = Optional.ofNullable(CuentaIntervinienteMapper.mapper.toEntity(dto));
                 LocalDateTime fechaActualTimestamp = LocalDateTime.now();
                 cuentaIntervinientes.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                dto = CuentaIntervinienteMapper.INSTANCE
+                dto = CuentaIntervinienteMapper.mapper
                         .toDTO(this.cuentaIntervinientesRepository.save(cuentaIntervinientes.get()));
                 log.info("La cuenta intervinientes {} se actualizo correctamente", dto);
                 return dto;
