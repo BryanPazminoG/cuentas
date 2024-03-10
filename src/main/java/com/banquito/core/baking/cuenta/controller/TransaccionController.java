@@ -38,7 +38,7 @@ public class TransaccionController {
     public ResponseEntity<TransaccionDTO> obtenerPorId(@PathVariable("id") Integer id) {
         log.info("Recibida solicitud para obtener la transacción con ID: {}", id);
         try {
-            return ResponseEntity.ok(this.transaccionService.obtenerPorId(id));
+            return ResponseEntity.ok(this.transaccionService.BuscarPorId(id));
         } catch (RuntimeException rte) {
             log.error("Error al obtener la transacción: {}", rte);
             return ResponseEntity.notFound().build();
@@ -49,7 +49,7 @@ public class TransaccionController {
     public ResponseEntity<Void> guardar(@RequestBody TransaccionDTO transaccion) {
         log.info("Se va a guardar la transaccion: {}", transaccion);
         try {
-            this.transaccionService.crear(transaccion);
+            this.transaccionService.Crear(transaccion);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException rte) {
             log.error("Error al generar la transaccion: {}", rte);
@@ -64,7 +64,7 @@ public class TransaccionController {
         try {
             String numeroCuenta = (String) requestBody.get("numeroCuenta");
             BigDecimal valorDebe = new BigDecimal(requestBody.get("valorDebe").toString());
-            Integer codigo =this.transaccionService.depositar(numeroCuenta, valorDebe);
+            Integer codigo =this.transaccionService.Depositar(numeroCuenta, valorDebe);
             return ResponseEntity.ok(codigo);
         } catch (RuntimeException rte) {
             log.error("Error al realizar el deposito", rte);
@@ -85,17 +85,17 @@ public class TransaccionController {
         }
     }
 
-    @PutMapping("/transferencias")
-    public ResponseEntity<Void> Transferencia(@RequestBody TransaccionDTO transaccion) {
-        log.info("Recibida solicitud para realizar una transferencia. Detalles de la transacción: {}", transaccion);
-        try {
-            this.transaccionService.transferir(transaccion);
-            return ResponseEntity.noContent().build();
-        } catch (CreacionException e) {
-            log.error("Error al realizar la transferencia", e);
-            return ResponseEntity.badRequest().build();
-        }
-    }
+    // @PutMapping("/transferencias")
+    // public ResponseEntity<Void> Transferencia(@RequestBody TransaccionDTO transaccion) {
+    //     log.info("Recibida solicitud para realizar una transferencia. Detalles de la transacción: {}", transaccion);
+    //     try {
+    //         this.transaccionService.transferir(transaccion);
+    //         return ResponseEntity.noContent().build();
+    //     } catch (CreacionException e) {
+    //         log.error("Error al realizar la transferencia", e);
+    //         return ResponseEntity.badRequest().build();
+    //     }
+    // }
 
     @PutMapping("/retiros")
     public ResponseEntity<Void> retirar(@RequestBody Map<String, Object> requestBody) {
@@ -104,7 +104,7 @@ public class TransaccionController {
         try {
             String numeroCuenta = (String) requestBody.get("numeroCuenta");
             BigDecimal valorHaber = new BigDecimal(requestBody.get("valorHaber").toString());
-            this.transaccionService.retirar(numeroCuenta, valorHaber);
+            this.transaccionService.Retirar(numeroCuenta, valorHaber);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException rte) {
             log.error("Error al realizar el retiro", rte);

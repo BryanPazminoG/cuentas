@@ -35,14 +35,14 @@ public class TipoCuentaController {
     @GetMapping
     public ResponseEntity<List<TipoCuentaDTO>> listarTiposCuentas() {
         log.info("Obteniendo listado de tipos de cuentas");
-        return ResponseEntity.ok(this.tipoCuentaService.listarTodo());
+        return ResponseEntity.ok(this.tipoCuentaService.Listar());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TipoCuentaDTO> buscarPorId(@PathVariable(name = "id") String id) {
         log.info("Obteniendo el tipo de cuenta con ID: {}", id);
         try {
-            return ResponseEntity.ok(this.tipoCuentaService.obtenerPorId(id));
+            return ResponseEntity.ok(this.tipoCuentaService.BuscarPorId(id));
         } catch(RuntimeException rte) {
             log.error("Error al obtener tipo de cuenta por ID", rte);
             return ResponseEntity.notFound().build();
@@ -53,7 +53,7 @@ public class TipoCuentaController {
     public ResponseEntity<Void> crear(@RequestBody TipoCuentaDTO tipoCuenta) {
         log.info("Se va a crear el tipo de cuenta: {}", tipoCuenta);
         try {
-            this.tipoCuentaService.crear(tipoCuenta);
+            this.tipoCuentaService.Crear(tipoCuenta);
             return ResponseEntity.noContent().build();
         } catch(RuntimeException rte) {
             log.error("Error al crear el tipo de cuenta", rte);
@@ -65,7 +65,7 @@ public class TipoCuentaController {
     public ResponseEntity<Void> actualizar(@RequestBody TipoCuentaDTO tipoCuenta) {
         log.info("Se va a actualizar el tipo de cuenta: {}", tipoCuenta);
         try {
-            this.tipoCuentaService.actualizar(tipoCuenta);
+            this.tipoCuentaService.Actualizar(tipoCuenta);
             return ResponseEntity.noContent().build();
         } catch(RuntimeException rte) {
             log.error("Error al actualizar el tipo de cuenta", rte);
