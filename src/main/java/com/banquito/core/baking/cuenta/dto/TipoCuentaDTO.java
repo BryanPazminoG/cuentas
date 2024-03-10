@@ -1,6 +1,6 @@
 package com.banquito.core.baking.cuenta.dto;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,15 +9,15 @@ import lombok.Data;
 @Data
 public class TipoCuentaDTO {
     private String codTipoCuenta;
-    private String codTasaInteres;
+    private Integer codTasaInteres;
     private String nombre;
     private String descripcion;
     private String tipoCapitalizacion;
     private String formaCapitalizacion;
     private Integer maximoNumeroIntervinientes;
-    private Date fechaCreacion;
-    private Date fechaUltimoCambio;
-
+    private Timestamp fechaVigencia;
+    private String estado;
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -48,7 +48,6 @@ public class TipoCuentaDTO {
         return "TipoCuentaDTO [codTipoCuenta=" + codTipoCuenta + ", codTasaInteres=" + codTasaInteres + ", nombre="
                 + nombre + ", descripcion=" + descripcion + ", tipoCapitalizacion=" + tipoCapitalizacion
                 + ", formaCapitalizacion=" + formaCapitalizacion + ", maximoNumeroIntervinientes="
-                + maximoNumeroIntervinientes + ", fechaCreacion=" + fechaCreacion + ", fechaUltimoCambio="
-                + fechaUltimoCambio + "]";
+                + maximoNumeroIntervinientes + ", fechaVigencia=" + fechaVigencia + ", estado=" + estado + "]";
     }
 }

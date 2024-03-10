@@ -20,13 +20,6 @@ public class CuentaDTO {
     private Date fechaUltimoCambio;
 
     @Override
-    public String toString() {
-        return "CuentaDTO [numeroCuenta=" + numeroCuenta + ", codTipoCuenta=" + codTipoCuenta + ", codCliente="
-                + codCliente + ", saldoContable=" + saldoContable + ", saldoDisponible=" + saldoDisponible + ", estado="
-                + estado + ", fechaCreacion=" + fechaCreacion + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -49,5 +42,12 @@ public class CuentaDTO {
         int result = 1;
         result = prime * result + ((codCuenta == null) ? 0 : codCuenta.hashCode());
         return result;
+    }
+    
+    @Override
+    public String toString() {
+        return "CuentaDTO [numeroCuenta=" + numeroCuenta + ", codTipoCuenta=" + codTipoCuenta + ", codCliente="
+                + codCliente + ", saldoContable=" + saldoContable + ", saldoDisponible=" + saldoDisponible + ", estado="
+                + estado + ", fechaCreacion=" + fechaCreacion + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
     }
 }

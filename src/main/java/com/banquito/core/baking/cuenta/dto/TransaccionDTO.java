@@ -10,19 +10,18 @@ import lombok.Data;
 @Data
 public class TransaccionDTO {
 
-    private Integer codCuentaOrigen;
-    private Integer codCuentaDestino;
+    private Integer codTransaccion;
+    private Integer codCuenta;
     private String codUnico;
     private String tipoAfectacion;
     private BigDecimal valorDebe;
     private BigDecimal valorHaber;
     private String tipoTransaccion;
+    private String canal;
     private String detalle;
-    private Date fechaCreacion;
     private String estado;
     private Date fechaAfectacion;
-    private Date fechaUltimoCambio;
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -32,10 +31,10 @@ public class TransaccionDTO {
         if (getClass() != obj.getClass())
             return false;
         TransaccionDTO other = (TransaccionDTO) obj;
-        if (codUnico == null) {
-            if (other.codUnico != null)
+        if (codTransaccion == null) {
+            if (other.codTransaccion != null)
                 return false;
-        } else if (!codUnico.equals(other.codUnico))
+        } else if (!codTransaccion.equals(other.codTransaccion))
             return false;
         return true;
     }
@@ -44,16 +43,16 @@ public class TransaccionDTO {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((codUnico == null) ? 0 : codUnico.hashCode());
+        result = prime * result + ((codTransaccion == null) ? 0 : codTransaccion.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
-        return "TransaccionDTO [ codCuentaOrigen=" + codCuentaOrigen
-                + ", codCuentaDestino=" + codCuentaDestino + ", codUnico=" + codUnico + ", tipoAfectacion="
-                + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber=" + valorHaber + ", tipoTransaccion="
-                + tipoTransaccion + ", detalle=" + detalle + ", fechaCreacion=" + fechaCreacion + ", estado=" + estado
-                + ", fechaAfectacion=" + fechaAfectacion + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
+        return "TransaccionDTO [codTransaccion=" + codTransaccion + ", codCuenta=" + codCuenta + ", codUnico="
+                + codUnico + ", tipoAfectacion=" + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber="
+                + valorHaber + ", tipoTransaccion=" + tipoTransaccion + ", canal=" + canal + ", detalle=" + detalle
+                + ", estado=" + estado + ", fechaAfectacion=" + fechaAfectacion + "]";
     }
+
 }

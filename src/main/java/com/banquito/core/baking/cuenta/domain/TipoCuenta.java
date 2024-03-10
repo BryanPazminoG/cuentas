@@ -23,6 +23,9 @@ public class TipoCuenta {
     @Column(name = "COD_TIPO_CUENTA", nullable = false, length = 10)
     private String codTipoCuenta;
 
+    @Column(name = "COD_TASA_INTERES", nullable = false, length = 10)
+    private Integer codTasaInteres;
+
     @Column(name = "NOMBRE", nullable = false, length = 50)
     private String nombre;
 
@@ -49,6 +52,9 @@ public class TipoCuenta {
     @Column(name = "FECHA_ULTIMO_CAMBIO", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaUltimoCambio;
+
+    @Column(name = "ESTADO", nullable = false, length = 3)
+    private String estado;
 
     @Version
     private Long version;

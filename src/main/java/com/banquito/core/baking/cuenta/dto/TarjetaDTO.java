@@ -16,12 +16,10 @@ public class TarjetaDTO {
     private String numero;
     private Timestamp fechaEmision;
     private Timestamp fechaVencimiento;
-    private String cvc;
-    private String pin;
+    private String cvv;
     private String tipoTarjeta;
     private String redPago;
     private String estado;
-    private Date fechaUltimoCambio;
 
     @Override
     public int hashCode() {
@@ -51,11 +49,8 @@ public class TarjetaDTO {
     @Override
     public String toString() {
         return "TarjetaDTO [codTarjeta=" + codTarjeta + ", codCuenta=" + codCuenta + ", numero=" + numero
-                + ", fechaEmision=" + fechaEmision + ", fechaVencimiento=" + fechaVencimiento + ", cvc=" + cvc
-                + ", pin=" + pin + ", tipoTarjeta=" + tipoTarjeta + ", redPago=" + redPago + ", estado=" + estado
-                + ", fechaUltimoCambio=" + fechaUltimoCambio + "]";
+                + ", fechaEmision=" + fechaEmision + ", fechaVencimiento=" + fechaVencimiento + ", cvv=" + cvv
+                + ", tipoTarjeta=" + tipoTarjeta + ", redPago=" + redPago + ", estado=" + estado + "]";
     }
-
-    
 
 }
