@@ -1,4 +1,4 @@
-package com.banquito.core.baking.cuenta.service;
+package com.banquito.core.baking.cuenta.service.exeption;
 
 public class CreacionException extends RuntimeException {
 

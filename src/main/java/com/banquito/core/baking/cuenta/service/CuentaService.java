@@ -10,6 +10,7 @@ import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.domain.Cuenta;
 import com.banquito.core.baking.cuenta.dto.CuentaDTO;
 import com.banquito.core.baking.cuenta.dto.Builder.CuentaBuilder;
+import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;

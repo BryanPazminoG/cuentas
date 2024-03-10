@@ -39,7 +39,7 @@ public class Tarjeta {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaVigencia;
 
-    @Column(name = "CVV", nullable = false, length = 64)
+    @Column(name = "CVV", nullable = false, length = 32)
     private String cvv;
 
     @Column(name = "TIPO_TARJETA", nullable = false, length = 3)

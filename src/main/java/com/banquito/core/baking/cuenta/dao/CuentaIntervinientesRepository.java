@@ -14,6 +14,7 @@ import java.util.List;
 public interface CuentaIntervinientesRepository extends CrudRepository<CuentaIntervinientes, CuentaIntervinientesPK> {
 
     List<CuentaIntervinientes> findByPKCodCuenta(Integer codCuenta);
-    List<CuentaIntervinientes> findByPKCodClientePersona(String codClientePersona);
-    
+    List<CuentaIntervinientes> findByPKCodClientePersona(Integer codClientePersona);
+    List<CuentaIntervinientes> findByEstado(String estado);
+
 }
