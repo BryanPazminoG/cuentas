@@ -1,18 +1,31 @@
 package com.banquito.core.baking.cuenta.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-// import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import com.banquito.core.baking.cuenta.domain.Cuenta;
 import com.banquito.core.baking.cuenta.domain.PagoInteres;
+import com.banquito.core.baking.cuenta.domain.TasaInteres;
+import com.banquito.core.baking.cuenta.domain.TipoCuenta;
+import com.banquito.core.baking.cuenta.dao.TipoCuentaRepository;
 import com.banquito.core.baking.cuenta.dto.PagoInteresDTO;
 // import com.banquito.core.baking.cuenta.dto.Builder.PagoInteresBuilder;
 import com.banquito.core.baking.cuenta.mappers.PagoInteresMapper;
+import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.dao.PagoInteresRepository;
+import com.banquito.core.baking.cuenta.dao.TasaInteresRepository;
+
+import java.math.MathContext;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import lombok.extern.slf4j.Slf4j;
 
 @EnableAsync
@@ -21,9 +34,17 @@ import lombok.extern.slf4j.Slf4j;
 public class PagoInteresService {
 
     private final PagoInteresRepository pagoInteresRepository;
+    private final CuentaRepository cuentaRepository;
+    private final TipoCuentaRepository tipoCuentaRepository;
+    private final TasaInteresRepository tasaInteresRepository;
 
-    public PagoInteresService(PagoInteresRepository pagoInteresRepository) {
+
+    public PagoInteresService(PagoInteresRepository pagoInteresRepository, CuentaRepository cuentaRepository,
+            TipoCuentaRepository tipoCuentaRepository, TasaInteresRepository tasaInteresRepository) {
         this.pagoInteresRepository = pagoInteresRepository;
+        this.cuentaRepository = cuentaRepository;
+        this.tipoCuentaRepository = tipoCuentaRepository;
+        this.tasaInteresRepository = tasaInteresRepository;
     }
 
     public PagoInteresDTO BuscarPorId(Integer codPagoInteres) {
@@ -31,7 +52,7 @@ public class PagoInteresService {
         Optional<PagoInteres> pagoInteres = this.pagoInteresRepository.findById(codPagoInteres);
         if (pagoInteres.isPresent()) {
             log.info("El pago interes con ID: {} se ha encontrado EXITOSAMENTE: {}", pagoInteres.get());
-            //PagoInteresDTO dto = PagoInteresBuilder.toDTO(pagoInteres.get());
+            // PagoInteresDTO dto = PagoInteresBuilder.toDTO(pagoInteres.get());
             PagoInteresDTO dto = PagoInteresMapper.mapper.toDTO(pagoInteres.get());
             return dto;
         } else {
@@ -45,40 +66,41 @@ public class PagoInteresService {
         List<PagoInteresDTO> listDTO = new ArrayList<>();
         List<PagoInteres> listPagoInteres = this.pagoInteresRepository.findByCodCuentaOrderByFechaEjecucion(codCuenta);
         for (PagoInteres pagoInteres : listPagoInteres) {
-            //listDTO.add(PagoInteresBuilder.toDTO(pagoInteres));
+            // listDTO.add(PagoInteresBuilder.toDTO(pagoInteres));
             listDTO.add(PagoInteresMapper.mapper.toDTO(pagoInteres));
         }
         log.info("Se encontro el listando de los pagos interes de la cuenta {} : {}", codCuenta, listDTO);
         return listDTO;
     }
 
-    // @Async
-    // @Scheduled(cron = "0 03 16 * * MON-SUN")
-    // public void GenerarInteres() {
+    @Async
+    @Scheduled(cron = "0 0 0 * * MON-SUN")
+    public void GenerarInteres() {
+        for (Cuenta cuenta : this.cuentaRepository.findByEstadoOrderByFechaCreacion("ACT")) {
 
-    // for (CreditoDTO creditoDTO : this.ListarCreditosEstado("VIG")) {
-    // BigDecimal montoCredito = creditoDTO.getCapitalPendiente();
-    // BigDecimal tasaInteresVigente = creditoDTO.getTasaInteres();
-    // BigDecimal interesGenerado =
-    // montoCredito.multiply(tasaInteresVigente.divide(new
-    // BigDecimal("36500"),MathContext.DECIMAL128));
-    // LocalDate fechaActualDate = LocalDate.now();
-    // TablaAmortizacion cuotaActiva =
-    // this.tablaAmortizacionRepository.findByPKCodCreditoAndEstadoOrderByFechaPlanificadaPago(creditoDTO.getCodCredito(),
-    // "PRX").get(0);
+            TipoCuenta tipoCuenta = this.tipoCuentaRepository.findById(cuenta.getCodTipoCuenta()).get();
+            TasaInteres tasaInteres = this.tasaInteresRepository.findById(tipoCuenta.getCodTasaInteres()).get();
+            BigDecimal capital = cuenta.getSaldoDisponible();
+            BigDecimal tasaInteresVigente = tasaInteres.getTasaInteres();
+            BigDecimal interesGanado = capital
+                    .multiply(tasaInteresVigente.divide(new BigDecimal("36500"), MathContext.DECIMAL128));
 
-    // InteresAcumulado interesAcumulado = new InteresAcumulado();
-    // interesAcumulado.setCodCredito(creditoDTO.getCodCredito());
-    // interesAcumulado.setNumeroCuota(cuotaActiva.getPK().getCodCuota());
-    // interesAcumulado.setCapitalPendiente(montoCredito);
-    // interesAcumulado.setTasaInteresVigente(tasaInteresVigente);
-    // interesAcumulado.setInteresGenerado(interesGenerado);
-    // interesAcumulado.setFechaCreacion(Date.valueOf(fechaActualDate));
-    // interesAcumulado.setEstado("PEN");
+            LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-    // this.interesAcumuladoRepository.save(interesAcumulado);
+            PagoInteres pagoInteres = new PagoInteres();
+            pagoInteres.setCodCuenta(cuenta.getCodCuenta());
+            pagoInteres.setCapital(capital);
+            pagoInteres.setInteresVigente(tasaInteresVigente);
+            pagoInteres.setInteresGanado(interesGanado);
+            pagoInteres.setFechaEjecucion(Timestamp.valueOf(fechaActualTimestamp));
 
-    // log.info("Creado el interes acumulado : {} ", interesAcumulado);
-    // }
-    // }
+            this.pagoInteresRepository.save(pagoInteres);
+
+            log.info("Creado el interes ganado : {} ", pagoInteres);
+
+            /* 
+                TRANSACCION PARA PAGO INTERES
+            */
+        }
+    }
 }

@@ -30,15 +30,18 @@ public class PagoInteres {
     @Column(name = "COD_CUENTA", nullable = false)
     private Integer codCuenta; 
 
-    @Column(name = "FECHA_EJECUCION", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaEjecucion;
-
     @Column(name = "CAPITAL", nullable = false, precision = 18, scale = 2)
     private BigDecimal capital;
 
+    @Column(name = "INTERES_VIGENTE", nullable = false, precision = 18, scale = 2)
+    private BigDecimal interesVigente;
+
     @Column(name = "INTERES_GANADO", nullable = false, precision = 18, scale = 2)
     private BigDecimal interesGanado;
+
+    @Column(name = "FECHA_EJECUCION", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp fechaEjecucion;
 
     public PagoInteres() {
     }
@@ -72,4 +75,10 @@ public class PagoInteres {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "PagoInteres [codPagoInteres=" + codPagoInteres + ", codCuenta=" + codCuenta + ", capital=" + capital
+                + ", interesVigente=" + interesVigente + ", interesGanado=" + interesGanado + ", fechaEjecucion="
+                + fechaEjecucion + "]";
+    }
 }

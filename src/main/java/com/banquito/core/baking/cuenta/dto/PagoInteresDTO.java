@@ -11,9 +11,10 @@ import lombok.Data;
 public class PagoInteresDTO {
     private Integer codPagoInteres;
     private Integer codCuenta;
-    private Timestamp fechaEjecucion;
     private BigDecimal capital;
+    private BigDecimal interesVigente;
     private BigDecimal interesGanado;
+    private Timestamp fechaEjecucion;
     
     @Override
     public boolean equals(Object obj) {
@@ -44,10 +45,11 @@ public class PagoInteresDTO {
         result = prime * result + ((codCuenta == null) ? 0 : codCuenta.hashCode());
         return result;
     }
+
     @Override
     public String toString() {
-        return "PagoInteresDTO [codPagoInteres=" + codPagoInteres + ", codCuenta=" + codCuenta + ", fechaEjecucion="
-                + fechaEjecucion + ", capital=" + capital + ", interesGanado=" + interesGanado + "]";
+        return "PagoInteresDTO [codPagoInteres=" + codPagoInteres + ", codCuenta=" + codCuenta + ", capital=" + capital
+                + ", interesVigente=" + interesVigente + ", interesGanado=" + interesGanado + ", fechaEjecucion="
+                + fechaEjecucion + "]";
     }
-    
 }
