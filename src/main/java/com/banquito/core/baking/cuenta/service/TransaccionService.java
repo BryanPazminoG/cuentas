@@ -6,11 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-
-import org.springframework.stereotype.Service;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.stereotype.Service;
 
 import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.dao.TransaccionRepository;
@@ -34,7 +32,7 @@ public class TransaccionService {
         this.cuentaRepository = cuentaRepository;
     }
 
-    public TransaccionDTO BuscarPorId(Integer codTransaccion) {
+    public TransaccionDTO buscarPorId(Integer codTransaccion) {
         log.info("Obteniendo la transaccion con ID: {}", codTransaccion);
         Optional<Transaccion> optTransaccion = this.transaccionRepository.findById(codTransaccion);
         if (optTransaccion.isPresent()) {
@@ -46,179 +44,146 @@ public class TransaccionService {
     }
 
     @Transactional
-    public TransaccionDTO Crear(TransaccionDTO dto) {
+    public TransaccionDTO crear(TransaccionDTO dto) {
         try {
             Transaccion transaccion = TransaccionBuilder.toTransaccion(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
-            
-            transaccion.setCodUnico(new DigestUtils("MD5").digestAsHex(dto.toString()));
+
+            transaccion.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
             transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
+            transaccion.setFechaAfectacion(Timestamp.valueOf(fechaActualTimestamp));
             transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
             dto = TransaccionBuilder.toDTO(this.transaccionRepository.save(transaccion));
             log.info("Se creo la transaccion: {}", transaccion);
             return dto;
         } catch (Exception e) {
-
             throw new CreacionException("Error al crear la transaccion: ", e);
         }
     }
 
     @Transactional
-    public Integer Depositar(String numCuenta, BigDecimal valorDebe) {
+    public void depositar(TransaccionDTO dto) {
         try {
-            log.info("Iniciando el proceso de deposito en la cuenta: {}", numCuenta);
-            int longitud = 64;
-            String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
-            StringBuilder codigoUnicoGenerado = new StringBuilder(longitud);
-            Transaccion transaccion = new Transaccion();
+            log.info("Iniciando el proceso de deposito en la cuenta: {}", dto.getCodCuenta());
 
-            if (cuentaRepository.findByNumeroCuenta(numCuenta) != null) {
-                Cuenta cuentaBeneficiario = cuentaRepository.findByNumeroCuenta(numCuenta).get();
+            Optional<Cuenta> optCuenta = this.cuentaRepository.findById(dto.getCodCuenta());
+            if (optCuenta.isPresent()) {
+                Cuenta cuenta = optCuenta.get();
+                if (cuenta.getSaldoDisponible().compareTo(dto.getValorDebe()) > 0) {
+                    LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                cuentaBeneficiario.setSaldoContable(cuentaBeneficiario.getSaldoContable().add(valorDebe));
-                cuentaBeneficiario.setSaldoDisponible(cuentaBeneficiario.getSaldoDisponible().add(valorDebe));
+                    cuenta.setSaldoContable(cuenta.getSaldoContable().add(dto.getValorDebe()));
+                    cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(dto.getValorDebe()));
+                    cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-                LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                    dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+                    dto.setTipoAfectacion("D");
+                    dto.setValorHaber(BigDecimal.ZERO);
+                    dto.setTipoTransaccion("DEP");
+                    dto.setDetalle("DEPOSITO BANCARIO");
+                    dto.setEstado("EXI");
 
-                cuentaBeneficiario.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-
-                transaccion.setCodCuenta(cuentaBeneficiario.getCodCuenta());;
-
-                for (int i = 0; i < longitud; i++) {
-                    int index = random.nextInt(caracteres.length());
-                    codigoUnicoGenerado.append(caracteres.charAt(index));
+                    this.cuentaRepository.save(cuenta);
+                    this.crear(dto);
+                    log.info("Deposito realizado con exito");
+                } else {
+                    log.error("Cuenta: " + cuenta.getNumeroCuenta() + " no posee fondos suficientes.");
                 }
-                transaccion.setCodUnico(codigoUnicoGenerado.toString());
-                transaccion.setTipoAfectacion("D");
-                transaccion.setValorDebe(valorDebe);
-                transaccion.setValorHaber(valorDebe.subtract(valorDebe));
-                transaccion.setTipoTransaccion("DEP");
-                transaccion.setDetalle("DEPOSITO BANCARIO");
-                transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
-                transaccion.setEstado("EXI");
-                transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                transaccion.setVersion(1L);
-
-                cuentaRepository.save(cuentaBeneficiario);
-                this.transaccionRepository.save(transaccion);
-                log.info("Deposito realizado con exito. Transaccion creada: {}", transaccion);
-                return transaccion.getCodTransaccion();
             } else {
-                throw new RuntimeException("No existe el numero de cuenta ingresado");
+                log.error("No existe la cuenta: " + dto.getCodCuenta());
             }
         } catch (Exception e) {
-            throw new CreacionException("Error en creacion de la transaccion:  Error: " + e, e);
+            throw new CreacionException("Error en creacion de la transaccion:" + dto + ". Error: " + e, e);
         }
     }
 
     @Transactional
-    public void Retirar(String numCuenta, BigDecimal valorHaber) {
+    public void retirar(TransaccionDTO dto) {
         try {
-            log.info("Iniciando el proceso de retiro en la cuenta: {}", numCuenta);
-            int longitud = 64;
-            String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
-            StringBuilder codigoUnicoGenerado = new StringBuilder(longitud);
-            Transaccion transaccion = new Transaccion();
+            log.info("Iniciando el proceso de retiro en la cuenta: {}", dto.getCodCuenta());
 
-            if (cuentaRepository.findByNumeroCuenta(numCuenta) != null) {
-                Cuenta cuentaPropietario = cuentaRepository.findByNumeroCuenta(numCuenta).get();
-
-                if (cuentaPropietario.getSaldoDisponible().compareTo(valorHaber) > 0) {
+            Optional<Cuenta> optCuenta = this.cuentaRepository.findById(dto.getCodCuenta());
+            if (optCuenta.isPresent()) {
+                Cuenta cuenta = optCuenta.get();
+                if (cuenta.getSaldoDisponible().compareTo(dto.getValorHaber()) > 0) {
                     LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                    cuentaPropietario.setSaldoContable(cuentaPropietario.getSaldoContable().subtract(valorHaber));
-                    cuentaPropietario.setSaldoDisponible(cuentaPropietario.getSaldoDisponible().subtract(valorHaber));
-                    cuentaPropietario.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                    cuenta.setSaldoContable(cuenta.getSaldoContable().subtract(dto.getValorHaber()));
+                    cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().subtract(dto.getValorHaber()));
+                    cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-                    transaccion.setCodCuenta(cuentaPropietario.getCodCuenta());
+                    dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+                    dto.setTipoAfectacion("C");
+                    dto.setValorDebe(BigDecimal.ZERO);
+                    dto.setTipoTransaccion("RET");
+                    dto.setDetalle("RETIRO");
+                    dto.setEstado("EXI");
 
-                    for (int i = 0; i < longitud; i++) {
-                        int index = random.nextInt(caracteres.length());
-                        codigoUnicoGenerado.append(caracteres.charAt(index));
-                    }
-                    transaccion.setCodUnico(codigoUnicoGenerado.toString());
-                    transaccion.setTipoAfectacion("C");
-                    transaccion.setValorDebe(valorHaber.subtract(valorHaber));
-                    transaccion.setValorHaber(valorHaber);
-                    transaccion.setTipoTransaccion("RET");
-                    transaccion.setDetalle("RETIRO");
-                    transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
-                    transaccion.setEstado("EXI");
-                    transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                    transaccion.setVersion(1L);
-
-                    cuentaRepository.save(cuentaPropietario);
-                    this.transaccionRepository.save(transaccion);
-                    log.info("Retiro realizado con exito. Transaccion creada: {}", transaccion);
+                    this.cuentaRepository.save(cuenta);
+                    this.crear(dto);
+                    log.info("Retiro realizado con exito.");
                 } else {
-                    throw new RuntimeException("No posee fondos suficientes");
+                    log.error("Cuenta: " + cuenta.getNumeroCuenta() + " no posee fondos suficientes.");
                 }
             } else {
-                throw new RuntimeException("No existe el numero de cuenta ingresado");
+                log.error("No existe la cuenta: " + dto.getCodCuenta());
             }
         } catch (Exception e) {
-            throw new CreacionException("Error en creacion de la transaccion:  Error: " + e, e);
+            throw new CreacionException("Error en creacion de la transaccion: " + dto + ". Error: " + e, e);
         }
     }
 
-    // @Transactional
-    // public void Transferir(TransaccionDTO dto) {
-    //     try {
-    //         log.info("Iniciando el proceso de transferencia con la transaccion: {}", dto);
-    //         Transaccion transaccion = TransaccionBuilder.toTransaccion(dto);
-    //         if ("TRE".equals(transaccion.getTipoTransaccion()) || "TEN".equals(transaccion.getTipoTransaccion())) {
-    //             Optional<Cuenta> cuentaOrigen = cuentaRepository.findById(transaccion.getCodCuentaOrigen());
-    //             Optional<Cuenta> cuentaDestino = cuentaRepository.findById(transaccion.getCodCuentaDestino());
+    @Transactional
+    public void transferir(TransaccionDTO dto, BigDecimal monto) {
+        try {
+            log.info("Iniciando el proceso de transferencia con la transaccion: {}", dto);
+            Optional<Cuenta> optCuenta = this.cuentaRepository.findById(dto.getCodCuenta());
+            if (optCuenta.isPresent()) {
+                Cuenta cuenta = optCuenta.get();
 
-    //             if (cuentaOrigen.isPresent() && cuentaDestino.isPresent()) {
-    //                 LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                if (cuenta.getSaldoDisponible().compareTo(monto) >= 0) {
+                    LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-    //                 Cuenta cuentaO = cuentaOrigen.get();
-    //                 Cuenta cuentaD = cuentaDestino.get();
+                    dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+                    dto.setEstado("EXI");
+                    dto.setCanal("BWE");
+                    dto.setTipoTransaccion("TRA");
 
-    //                 cuentaO.setSaldoContable(
-    //                         cuentaO.getSaldoContable().subtract(transaccion.getValorDebe()));
-    //                 cuentaO.setSaldoDisponible(
-    //                         cuentaO.getSaldoDisponible().subtract(transaccion.getValorDebe()));
+                    if ("D".equals(dto.getTipoAfectacion())) {
+                        cuenta.setSaldoContable(cuenta.getSaldoContable().subtract(monto));
+                        cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().subtract(monto));
+                        cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                        dto.setValorDebe(BigDecimal.ZERO);
+                        dto.setValorHaber(monto);
+                    } else {
+                        cuenta.setSaldoContable(cuenta.getSaldoContable().add(monto));
+                        cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(monto));
+                        cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                        dto.setValorDebe(monto);
+                        dto.setValorHaber(BigDecimal.ZERO);
+                    }
 
-    //                 cuentaD.setSaldoContable(
-    //                         cuentaD.getSaldoContable().add(transaccion.getValorDebe()));
-    //                 cuentaD.setSaldoDisponible(
-    //                         cuentaD.getSaldoDisponible().add(transaccion.getValorDebe()));
+                    this.cuentaRepository.save(cuenta);
+                    this.crear(dto);
 
-    //                 transaccion.setCodUnico(new DigestUtils("MD5").digestAsHex(dto.toString()));
-    //                 transaccion.setEstado("EXI");
-    //                 transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
-    //                 transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-    //                 transaccion.setTipoAfectacion("D");
-    //                 transaccion.setVersion(1L);
-    //                 transaccion.hashCode();
-    //                 this.transaccionRepository.save(transaccion);
-    //                 log.info("Transaccion creada: {}", transaccion);
-    //                 cuentaRepository.save(cuentaO);
-    //                 cuentaRepository.save(cuentaD);
+                    log.info("Transferencia realizada con exito. Cuenta: {}, Monto: {}",
+                            cuenta.getNumeroCuenta(), monto);
+                } else {
+                    log.error("Saldo insuficiente en Cuenta: " + cuenta.getNumeroCuenta());
+                }
+            } else {
+                log.error("No existe la cuenta: " + dto.getCodCuenta());
+            }
+        } catch (Exception e) {
+            throw new CreacionException("Error en creacion de la transaccion: " + dto + ", Error: " + e, e);
+        }
+    }
 
-    //                 log.info("Transferencia realizada con exito. Cuenta origen: {}, Cuenta destino: {}, Monto: {}",
-    //                         cuentaO.getNumeroCuenta(), cuentaD.getNumeroCuenta(), transaccion.getValorDebe());
-
-    //             }
-
-    //         } else {
-    //             throw new RuntimeException("El tipo de cuenta no es compatible con depositos");
-    //         }
-    //     } catch (Exception e) {
-    //         throw new CreacionException(
-    //                 "Error en creacion de la transaccion: " + dto + ", Error: " + e, e);
-    //     }
-    // }
-
-    public List<TransaccionDTO> buscarPorCodigoCuenta(Integer codCuentaOrigen) {
-        log.info("Buscando transacciones por codigo de cuenta de origen: {}", codCuentaOrigen);
+    public List<TransaccionDTO> buscarPorCodigoCuenta(Integer codCuenta) {
+        log.info("Buscando transacciones por codigo de cuenta: {}", codCuenta);
         List<TransaccionDTO> dtos = new ArrayList<>();
-        for (Transaccion transaccion : this.transaccionRepository.findByCodCuentaOrigen(codCuentaOrigen)) {
+        for (Transaccion transaccion : this.transaccionRepository.findByCodCuenta(codCuenta)) {
             dtos.add(TransaccionBuilder.toDTO(transaccion));
         }
         return dtos;

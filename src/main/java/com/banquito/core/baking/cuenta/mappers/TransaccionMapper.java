@@ -14,7 +14,10 @@ public interface TransaccionMapper {
 
     TransaccionDTO toDTO(Transaccion entity);
     @Mappings({
-        @Mapping(target = "", ignore = true),
+        @Mapping(target = "fechaCreacion", ignore = true),
+        @Mapping(target = "fechaUltimoCambio", ignore = true),
+        @Mapping(target = "fechaAfectacion", ignore = true),
+        @Mapping(target = "version", ignore = true)
     })
     Transaccion toEntity(TransaccionDTO dto);
 }

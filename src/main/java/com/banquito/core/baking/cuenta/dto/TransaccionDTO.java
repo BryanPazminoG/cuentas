@@ -1,7 +1,6 @@
 package com.banquito.core.baking.cuenta.dto;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 import lombok.Builder;
 import lombok.Data;
@@ -19,14 +18,13 @@ public class TransaccionDTO {
     private String canal;
     private String detalle;
     private String estado;
-    private Timestamp fechaAfectacion;
 
     @Override
     public String toString() {
         return "TransaccionDTO [codTransaccion=" + codTransaccion + ", codCuenta=" + codCuenta + ", codUnico="
                 + codUnico + ", tipoAfectacion=" + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber="
                 + valorHaber + ", tipoTransaccion=" + tipoTransaccion + ", canal=" + canal + ", detalle=" + detalle
-                + ", estado=" + estado + ", fechaAfectacion=" + fechaAfectacion + "]";
+                + ", estado=" + estado + "]";
     }
 
     @Override

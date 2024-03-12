@@ -18,7 +18,6 @@ public class TransaccionBuilder {
                 .canal(transaccion.getCanal())
                 .detalle(transaccion.getDetalle())
                 .estado(transaccion.getEstado())
-                .fechaAfectacion(transaccion.getFechaAfectacion())
                 .build();
         return dto;
     }
@@ -36,7 +35,6 @@ public class TransaccionBuilder {
         transaccion.setCanal(dto.getCanal());
         transaccion.setDetalle(dto.getDetalle());
         transaccion.setEstado(dto.getEstado());
-        transaccion.setFechaAfectacion(dto.getFechaAfectacion());
         return transaccion;
     }
 

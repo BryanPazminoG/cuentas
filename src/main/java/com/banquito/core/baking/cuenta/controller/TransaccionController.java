@@ -2,14 +2,12 @@ package com.banquito.core.baking.cuenta.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,9 +19,10 @@ import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@CrossOrigin(origins = {"http://localhost:4200", "http://34.173.161.134:4201", "http://34.176.205.203:4202", 
-                        "http://34.176.102.118:4203", "http://34.176.137.180:4204"})
-//@CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
+@CrossOrigin(origins = { "http://localhost:4200", "http://34.173.161.134:4201", "http://34.176.205.203:4202",
+        "http://34.176.102.118:4203", "http://34.176.137.180:4204" })
+// @CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET,
+// RequestMethod.POST, RequestMethod.PUT})
 @RestController
 @RequestMapping("/api/v1/transacciones")
 public class TransaccionController {
@@ -38,7 +37,7 @@ public class TransaccionController {
     public ResponseEntity<TransaccionDTO> obtenerPorId(@PathVariable("id") Integer id) {
         log.info("Recibida solicitud para obtener la transacción con ID: {}", id);
         try {
-            return ResponseEntity.ok(this.transaccionService.BuscarPorId(id));
+            return ResponseEntity.ok(this.transaccionService.buscarPorId(id));
         } catch (RuntimeException rte) {
             log.error("Error al obtener la transacción: {}", rte);
             return ResponseEntity.notFound().build();
@@ -49,25 +48,10 @@ public class TransaccionController {
     public ResponseEntity<Void> guardar(@RequestBody TransaccionDTO transaccion) {
         log.info("Se va a guardar la transaccion: {}", transaccion);
         try {
-            this.transaccionService.Crear(transaccion);
+            this.transaccionService.crear(transaccion);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException rte) {
             log.error("Error al generar la transaccion: {}", rte);
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping("/depositos")
-    public ResponseEntity<Integer> depositarMonto(@RequestBody Map<String, Object> requestBody) {
-        log.info("Recibida solicitud para depositar monto en la cuenta. Detalles: {}", requestBody);
-
-        try {
-            String numeroCuenta = (String) requestBody.get("numeroCuenta");
-            BigDecimal valorDebe = new BigDecimal(requestBody.get("valorDebe").toString());
-            Integer codigo =this.transaccionService.Depositar(numeroCuenta, valorDebe);
-            return ResponseEntity.ok(codigo);
-        } catch (RuntimeException rte) {
-            log.error("Error al realizar el deposito", rte);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -85,31 +69,39 @@ public class TransaccionController {
         }
     }
 
-    // @PutMapping("/transferencias")
-    // public ResponseEntity<Void> Transferencia(@RequestBody TransaccionDTO transaccion) {
-    //     log.info("Recibida solicitud para realizar una transferencia. Detalles de la transacción: {}", transaccion);
-    //     try {
-    //         this.transaccionService.transferir(transaccion);
-    //         return ResponseEntity.noContent().build();
-    //     } catch (CreacionException e) {
-    //         log.error("Error al realizar la transferencia", e);
-    //         return ResponseEntity.badRequest().build();
-    //     }
-    // }
-
-    @PutMapping("/retiros")
-    public ResponseEntity<Void> retirar(@RequestBody Map<String, Object> requestBody) {
-        log.info("Recibida solicitud para realizar un retiro. Detalles: {}", requestBody);
-
+    @PostMapping("/depositos")
+    public ResponseEntity<Void> depositar(@RequestBody TransaccionDTO transaccion) {
+        log.info("Recibida solicitud para depositar monto en la cuenta. Detalles: {}", transaccion);
         try {
-            String numeroCuenta = (String) requestBody.get("numeroCuenta");
-            BigDecimal valorHaber = new BigDecimal(requestBody.get("valorHaber").toString());
-            this.transaccionService.Retirar(numeroCuenta, valorHaber);
+            this.transaccionService.depositar(transaccion);
             return ResponseEntity.noContent().build();
-        } catch (RuntimeException rte) {
-            log.error("Error al realizar el retiro", rte);
+        } catch (CreacionException e) {
+            log.error("Error al realizar el deposito", e);
             return ResponseEntity.badRequest().build();
         }
     }
 
+    @PostMapping("/transferencias")
+    public ResponseEntity<Void> transferir(@RequestBody TransaccionDTO transaccion, @RequestBody BigDecimal monto) {
+        log.info("Recibida solicitud para realizar una transferencia. Detalles de la transacción: {}", transaccion);
+        try {
+            this.transaccionService.transferir(transaccion, monto);
+            return ResponseEntity.noContent().build();
+        } catch (CreacionException e) {
+            log.error("Error al realizar la transferencia", e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/retiros")
+    public ResponseEntity<Void> retirar(@RequestBody TransaccionDTO transaccion) {
+        log.info("Recibida solicitud para realizar un retiro. Detalles: {}", transaccion);
+        try {
+            this.transaccionService.retirar(transaccion);
+            return ResponseEntity.noContent().build();
+        } catch (CreacionException e) {
+            log.error("Error al realizar el retiro", e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
