@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.dao.TarjetaRepository;
 import com.banquito.core.baking.cuenta.domain.Tarjeta;
 import com.banquito.core.baking.cuenta.dto.TarjetaDTO;
-// import com.banquito.core.baking.cuenta.dto.Builder.TarjetaBuilder;
-import com.banquito.core.baking.cuenta.mappers.TarjetaMapper;
+import com.banquito.core.baking.cuenta.dto.Builder.TarjetaBuilder;
 import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 
 import jakarta.transaction.Transactional;
@@ -31,8 +30,7 @@ public class TarjetaService {
         Optional<Tarjeta> tarjeta = this.tarjetaRepository.findById(codTarjeta);
         if (tarjeta.isPresent()) {
             log.info("La tarjeta con ID: {} se ha encontrado EXITOSAMENTE: {}", tarjeta.get());
-            //TarjetaDTO dto = TarjetaBuilder.toDTO(tarjeta.get());
-            TarjetaDTO dto = TarjetaMapper.mapper.toDTO(tarjeta.get());
+            TarjetaDTO dto = TarjetaBuilder.toDTO(tarjeta.get());
             return dto;
         } else {
             log.error("La tarjeta con ID: {} no existe", codTarjeta);
@@ -44,8 +42,7 @@ public class TarjetaService {
         Optional<Tarjeta> tarjeta = this.tarjetaRepository.findByNumero(numero);
         if (tarjeta.isPresent()) {
             log.info("La tarjeta con el numero: {} se ha encontrado EXITOSAMENTE: {}", numero);
-            // TarjetaDTO dto = TarjetaBuilder.toDTO(tarjeta.get());
-            TarjetaDTO dto = TarjetaMapper.mapper.toDTO(tarjeta.get());
+            TarjetaDTO dto = TarjetaBuilder.toDTO(tarjeta.get());
             return dto;
         } else {
             log.error("La tarjeta con el numero: {} no existe", numero);
@@ -57,8 +54,7 @@ public class TarjetaService {
         List<TarjetaDTO> listDTO = new ArrayList<>();
         List<Tarjeta> listTarjeta = this.tarjetaRepository.findByCodCuentaOrderByFechaEmision(codCuenta);
         for (Tarjeta tarjeta : listTarjeta) {
-            // listDTO.add(TarjetaBuilder.toDTO(tarjeta));
-            listDTO.add(TarjetaMapper.mapper.toDTO(tarjeta));
+            listDTO.add(TarjetaBuilder.toDTO(tarjeta));
         }
         log.info("Se encontro el listando de las tarjetas de la cuenta {} : {}", codCuenta, listDTO);
         return listDTO;
@@ -68,15 +64,13 @@ public class TarjetaService {
     public TarjetaDTO Crear(TarjetaDTO dto) {
         try {
 
-            // Tarjeta tarjeta = TarjetaBuilder.toTarjeta(dto);
-            Tarjeta tarjeta = TarjetaMapper.mapper.toEntity(dto);
+            Tarjeta tarjeta = TarjetaBuilder.toTarjeta(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
             tarjeta.setFechaEmision(Timestamp.valueOf(fechaActualTimestamp));
             tarjeta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
             tarjeta.setEstado("ACT");
-            // dto =  TarjetaBuilder.toDTO(this.tarjetaRepository.save(tarjeta));
-            dto =  TarjetaMapper.mapper.toDTO(this.tarjetaRepository.save(tarjeta));
+            dto =  TarjetaBuilder.toDTO(this.tarjetaRepository.save(tarjeta));
 
             log.info("La tarjeta se ha creado exitosamente: {}", dto);
             return dto;
@@ -97,8 +91,7 @@ public class TarjetaService {
                     tarjeta.get().setEstado(estado);
                     LocalDateTime fechaActualTimestamp = LocalDateTime.now();
                     tarjeta.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                    // TarjetaDTO dto = TarjetaBuilder.toDTO(this.tarjetaRepository.save(tarjeta.get()));
-                    TarjetaDTO dto = TarjetaMapper.mapper.toDTO(this.tarjetaRepository.save(tarjeta.get()));
+                    TarjetaDTO dto = TarjetaBuilder.toDTO(this.tarjetaRepository.save(tarjeta.get()));
                     log.info("El estado de la tarjeta se ha actualizado correctamente a {}", estado);
                     return dto;
                 }else{

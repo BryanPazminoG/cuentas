@@ -1,8 +1,7 @@
 package com.banquito.core.baking.cuenta.dto;
 import java.sql.Timestamp;
 
-import com.google.auto.value.AutoValue.Builder;
-
+import lombok.Builder;
 import lombok.Data;
 
 @Builder

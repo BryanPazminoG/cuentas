@@ -28,7 +28,7 @@ public class Tarjeta {
     @Column(name = "COD_CUENTA", nullable = false)
     private Integer codCuenta;
 
-    @Column(name = "NUMERO", nullable = false, length = 18)
+    @Column(name = "NUMERO", nullable = false, length = 16)
     private String numero;
 
     @Column(name = "FECHA_EMISION", nullable = false)
@@ -39,8 +39,8 @@ public class Tarjeta {
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaVigencia;
 
-    @Column(name = "CVV", nullable = false, length = 32)
-    private String cvv;
+    @Column(name = "CVC", nullable = false, length = 32)
+    private String cvc;
 
     @Column(name = "TIPO_TARJETA", nullable = false, length = 3)
     private String tipoTarjeta;
@@ -90,4 +90,13 @@ public class Tarjeta {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Tarjeta [codTarjeta=" + codTarjeta + ", codCuenta=" + codCuenta + ", numero=" + numero
+                + ", fechaEmision=" + fechaEmision + ", fechaVigencia=" + fechaVigencia + ", cvc=" + cvc
+                + ", tipoTarjeta=" + tipoTarjeta + ", redPago=" + redPago + ", estado=" + estado
+                + ", fechaUltimoCambio=" + fechaUltimoCambio + ", version=" + version + "]";
+    }
+
+    
 }

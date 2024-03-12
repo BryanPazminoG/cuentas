@@ -11,8 +11,7 @@ import com.banquito.core.baking.cuenta.dao.CuentaIntervinientesRepository;
 import com.banquito.core.baking.cuenta.domain.CuentaIntervinientes;
 import com.banquito.core.baking.cuenta.domain.CuentaIntervinientesPK;
 import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
-
-import com.banquito.core.baking.cuenta.mappers.CuentaIntervinienteMapper;
+import com.banquito.core.baking.cuenta.dto.Builder.CuentaIntervienteBuilder;
 import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 
 import jakarta.transaction.Transactional;
@@ -36,7 +35,7 @@ public class CuentaIntervinientesService {
                 .findById(cuentaIntervinientePK);
         if (cuentaIntervinientes.isPresent()) {
             log.info("Se encontro la cuenta {} con el codigo cliente {}", codCuenta, codCliente);
-            return CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes.get());
+            return CuentaIntervienteBuilder.toDTO(cuentaIntervinientes.get());
         } else {
             log.error("No existe la cuenta {} con el codigo cliente {}", codCuenta, codCliente);
             throw new RuntimeException(
@@ -50,7 +49,7 @@ public class CuentaIntervinientesService {
                 .findByPKCodCuenta(codCuenta);
         ;
         for (CuentaIntervinientes cuentaIntervinientes : listCuentaIntervinientes) {
-            listDTO.add(CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes));
+           listDTO.add(CuentaIntervienteBuilder.toDTO(cuentaIntervinientes));
         }
         log.info("Se encontro las cuentas del interviniente: {}", codCuenta);
         return listDTO;
@@ -62,7 +61,8 @@ public class CuentaIntervinientesService {
                 .findByPKCodCliente(CodCliente);
         ;
         for (CuentaIntervinientes cuentaIntervinientes : listCuentaIntervinientes) {
-            listDTO.add(CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes));
+            listDTO.add(CuentaIntervienteBuilder.toDTO(cuentaIntervinientes));
+
         }
         log.info("Se encontro los intervinientes de la cuenta: {}", CodCliente);
         return listDTO;
@@ -73,7 +73,7 @@ public class CuentaIntervinientesService {
                 || "SUS".equals(estado) || "LIB".equals(estado) || "CES".equals(estado)) {
             List<CuentaIntervinientesDTO> listDTO = new ArrayList<>();
             for (CuentaIntervinientes cuentaIntervinientes : this.cuentaIntervinientesRepository.findByEstado(estado)) {
-                listDTO.add(CuentaIntervinienteMapper.mapper.toDTO(cuentaIntervinientes));
+                listDTO.add(CuentaIntervienteBuilder.toDTO(cuentaIntervinientes));
             }
             log.info("Se encontro los intervinientes con el estado: {}", estado);
             return listDTO;
@@ -86,12 +86,11 @@ public class CuentaIntervinientesService {
     @Transactional
     public CuentaIntervinientesDTO Crear(CuentaIntervinientesDTO dto) {
         try {
-            CuentaIntervinientes cuentaIntervinientes = CuentaIntervinienteMapper.mapper.toEntity(dto);
+            CuentaIntervinientes cuentaIntervinientes = CuentaIntervienteBuilder.toCuentaInterviente(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
             cuentaIntervinientes.setFechaInicio(Timestamp.valueOf(fechaActualTimestamp));
             cuentaIntervinientes.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-            dto = CuentaIntervinienteMapper.mapper
-                    .toDTO(this.cuentaIntervinientesRepository.save(cuentaIntervinientes));
+            dto = CuentaIntervienteBuilder.toDTO(this.cuentaIntervinientesRepository.save(cuentaIntervinientes));
             log.info("Se creo la cuenta interviniente: {}", dto);
             return dto;
         } catch (Exception e) {
@@ -107,12 +106,12 @@ public class CuentaIntervinientesService {
             Optional<CuentaIntervinientes> cuentaIntervinientes = cuentaIntervinientesRepository.findById(PK);
 
             if (cuentaIntervinientes.isPresent()) {
-                cuentaIntervinientes = Optional.ofNullable(CuentaIntervinienteMapper.mapper.toEntity(dto));
+                CuentaIntervinientes cuentaIntSource = CuentaIntervienteBuilder.toCuentaInterviente(dto);
+                CuentaIntervinientes cuentaInt = CuentaIntervienteBuilder.copyCuentaInterviente(cuentaIntSource, cuentaIntervinientes.get());
                 LocalDateTime fechaActualTimestamp = LocalDateTime.now();
-                cuentaIntervinientes.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                dto = CuentaIntervinienteMapper.mapper
-                        .toDTO(this.cuentaIntervinientesRepository.save(cuentaIntervinientes.get()));
-                log.info("La cuenta intervinientes {} se actualizo correctamente", dto);
+                cuentaInt.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                dto = CuentaIntervienteBuilder.toDTO(this.cuentaIntervinientesRepository.save(cuentaInt));
+                log.info("La cuenta intervinientes {} se actualizo correctamente", cuentaInt);
                 return dto;
             } else {
                 log.error("No existe la cuenta intervinientes con cod_cuenta: {} y cod_cliente {}", dto.getCodCuenta(),

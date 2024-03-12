@@ -44,7 +44,7 @@ public class Transaccion {
     @Column(name = "TIPO_TRANSACCION", nullable = false, length = 3)
     private String tipoTransaccion;
 
-    @Column(name = "CANAL", nullable = false, length = 3)
+    @Column(name = "CANAL", nullable = true, length = 3)
     private String canal;
 
     @Column(name = "DETALLE", nullable = false, length = 50)

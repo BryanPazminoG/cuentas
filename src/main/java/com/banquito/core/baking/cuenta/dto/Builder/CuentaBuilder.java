@@ -39,25 +39,6 @@ public class CuentaBuilder {
     }
 
     public static Cuenta copyCuenta(Cuenta source, Cuenta destiny) {
-        if (source.getCodCuenta() != null) {
-            destiny.setCodCuenta(source.getCodCuenta());
-        }
-
-        if (source.getCodTipoCuenta() != null) {
-            destiny.setCodTipoCuenta(source.getCodTipoCuenta());
-        }
-
-        if (source.getCodUnico() != null) {
-            destiny.setCodUnico(source.getCodUnico());
-        }
-
-        if (source.getCodCliente() != null) {
-            destiny.setCodCliente(source.getCodCliente());
-        }
-
-        if (source.getNumeroCuenta() != null) {
-            destiny.setNumeroCuenta(source.getNumeroCuenta());
-        }
 
         if (source.getSaldoContable() != null) {
             destiny.setSaldoContable(source.getSaldoContable());
@@ -75,10 +56,6 @@ public class CuentaBuilder {
             destiny.setEstado(source.getEstado());
         }
 
-        if (source.getFechaCreacion() != null) {
-            destiny.setFechaCreacion(source.getFechaCreacion());
-        }
-
         if (source.getFechaActivacion() != null) {
             destiny.setFechaActivacion(source.getFechaActivacion());
         }
@@ -87,9 +64,6 @@ public class CuentaBuilder {
             destiny.setFechaCierre(source.getFechaCierre());
         }
 
-        if (source.getFechaUltimoCambio() != null) {
-            destiny.setFechaUltimoCambio(source.getFechaUltimoCambio());
-        }   
         return destiny;
     }
 }

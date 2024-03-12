@@ -13,7 +13,7 @@ public class TarjetaBuilder {
         .numero(tarjeta.getNumero())
         .fechaEmision(tarjeta.getFechaEmision())
         .fechaVigencia(tarjeta.getFechaVigencia())
-        .cvv(tarjeta.getCvv())
+        .cvc(tarjeta.getCvc())
         .tipoTarjeta(tarjeta.getTipoTarjeta())
         .redPago(tarjeta.getRedPago())
         .estado(tarjeta.getEstado())
@@ -29,7 +29,7 @@ public class TarjetaBuilder {
         tarjeta.setNumero(dto.getNumero());
         tarjeta.setFechaEmision(dto.getFechaEmision());
         tarjeta.setFechaVigencia(dto.getFechaVigencia());
-        tarjeta.setCvv(dto.getCvv());
+        tarjeta.setCvc(dto.getCvc());
         tarjeta.setTipoTarjeta(dto.getTipoTarjeta());
         tarjeta.setRedPago(dto.getRedPago());
         tarjeta.setEstado(dto.getEstado());
@@ -56,8 +56,8 @@ public class TarjetaBuilder {
             destiny.setFechaVigencia(source.getFechaVigencia());
         }
 
-        if (source.getCvv() != null) {
-            destiny.setCvv(source.getCvv());
+        if (source.getCvc() != null) {
+            destiny.setCvc(source.getCvc());
         }
         
         if (source.getTipoTarjeta() != null) {

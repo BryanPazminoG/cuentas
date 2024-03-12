@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 import com.banquito.core.baking.cuenta.dao.TipoCuentaRepository;
 import com.banquito.core.baking.cuenta.domain.TipoCuenta;
 import com.banquito.core.baking.cuenta.dto.TipoCuentaDTO;
-// import com.banquito.core.baking.cuenta.dto.Builder.TipoCuentaBuilder;
-import com.banquito.core.baking.cuenta.mappers.TipoCuentaMapper;
+import com.banquito.core.baking.cuenta.dto.Builder.TipoCuentaBuilder;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +28,7 @@ public class TipoCuentaService {
     public List<TipoCuentaDTO> Listar() {
         List<TipoCuentaDTO> listDTO = new ArrayList<>();
         for (TipoCuenta tipoCuenta : this.tipoCuentaRepository.findAll()) {
-            // listDTO.add(TipoCuentaBuilder.toDTO(tipoCuenta));
-            listDTO.add(TipoCuentaMapper.mapper.toDTO(tipoCuenta));
+            listDTO.add(TipoCuentaBuilder.toDTO(tipoCuenta));
         }
         log.info("Se encontro el listando de los siguientes tipo cuenta: {}", listDTO);
 
@@ -41,8 +39,7 @@ public class TipoCuentaService {
         if ("ACT".equals(estado) || "INA".equals(estado)) {
             List<TipoCuentaDTO> listDTO = new ArrayList<>();
             for (TipoCuenta tipoCuenta : this.tipoCuentaRepository.findByEstadoOrderByFechaCreacion(estado)) {
-                // listDTO.add(TipoCuentaBuilder.toDTO(tipoCuenta));
-                listDTO.add(TipoCuentaMapper.mapper.toDTO(tipoCuenta));
+                listDTO.add(TipoCuentaBuilder.toDTO(tipoCuenta));
             }
             log.info("Se obtuvo el tipo cuenta con el estado: ", estado);
             return listDTO;
@@ -56,8 +53,7 @@ public class TipoCuentaService {
         Optional<TipoCuenta> tipoCuenta = this.tipoCuentaRepository.findById(codTipoCuenta);
         if (tipoCuenta.isPresent()) {
             log.info("El tipoCuenta con ID: {} se ha encontrado EXITOSAMENTE: {}", tipoCuenta.get());
-            // TipoCuentaDTO dto = TipoCuentaBuilder.toDTO(tipoCuenta.get());
-            TipoCuentaDTO dto = TipoCuentaMapper.mapper.toDTO(tipoCuenta.get());
+            TipoCuentaDTO dto = TipoCuentaBuilder.toDTO(tipoCuenta.get());
             return dto;
         } else {
             log.error("El tipo cuenta con ID: {} no existe", codTipoCuenta);
@@ -68,13 +64,11 @@ public class TipoCuentaService {
     @Transactional
     public TipoCuentaDTO Crear(TipoCuentaDTO dto) {
         try {
-            // TipoCuenta tipoCuenta = TipoCuentaBuilder.toTipoCuenta(dto);
-            TipoCuenta tipoCuenta = TipoCuentaMapper.mapper.toEntity(dto);
+            TipoCuenta tipoCuenta = TipoCuentaBuilder.toTipoCuenta(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
             tipoCuenta.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
             tipoCuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-            // dto = TipoCuentaBuilder.toDTO(this.tipoCuentaRepository.save(tipoCuenta));
-            dto = TipoCuentaMapper.mapper.toDTO(this.tipoCuentaRepository.save(tipoCuenta));
+            dto = TipoCuentaBuilder.toDTO(this.tipoCuentaRepository.save(tipoCuenta));
             log.info("Se creo el tipo de cuenta: {}", tipoCuenta);
             return dto;
         } catch (Exception e) {
@@ -89,13 +83,12 @@ public class TipoCuentaService {
 
             Optional<TipoCuenta> tipoCuenta = tipoCuentaRepository.findById(dto.getCodTipoCuenta());
             if (tipoCuenta.isPresent()) {
-                // tipoCuenta = Optional.ofNullable(TipoCuentaBuilder.toTipoCuenta(dto));
-                tipoCuenta = Optional.ofNullable(TipoCuentaMapper.mapper.toEntity(dto));
+                TipoCuenta tipoCuentaSource = TipoCuentaBuilder.toTipoCuenta(dto);
+                TipoCuenta tipoCuentaDestiny = TipoCuentaBuilder.copyTipoCuenta(tipoCuentaSource, tipoCuenta.get());
                 LocalDateTime fechaActualTimestamp = LocalDateTime.now();
-                tipoCuenta.get().setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                // dto = TipoCuentaBuilder.toDTO(this.tipoCuentaRepository.save(tipoCuenta.get()));
-                dto = TipoCuentaMapper.mapper.toDTO(this.tipoCuentaRepository.save(tipoCuenta.get()));
-                log.info("Se actualizaron los datos del tipo de cuenta: {} Exitosamente", tipoCuenta);
+                tipoCuentaDestiny.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                dto = TipoCuentaBuilder.toDTO(this.tipoCuentaRepository.save(tipoCuentaDestiny));
+                log.info("Se actualizaron los datos del tipo de cuenta: {} Exitosamente", tipoCuentaDestiny);
                 return dto;
             } else {
                 log.error("El tipo cuenta con ID: {} no existe", dto.getCodTipoCuenta());

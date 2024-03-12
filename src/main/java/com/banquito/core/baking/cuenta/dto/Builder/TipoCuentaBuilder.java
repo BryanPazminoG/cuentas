@@ -37,9 +37,6 @@ public class TipoCuentaBuilder {
 
     public static TipoCuenta copyTipoCuenta(TipoCuenta source, TipoCuenta destiny) {
         
-        if (source.getCodTipoCuenta() != null) {
-            destiny.setCodTipoCuenta(source.getCodTipoCuenta());
-        }
 
         if (source.getCodTasaInteres() != null) {
             destiny.setCodTasaInteres(source.getCodTasaInteres());
@@ -65,17 +62,12 @@ public class TipoCuentaBuilder {
             destiny.setMaximoNumeroIntervinientes(source.getMaximoNumeroIntervinientes());
         }
 
-
-        if (source.getFechaCreacion() != null) {
-            destiny.setFechaCreacion(source.getFechaCreacion());
-        }
-
         if (source.getFechaVigencia() != null) {
             destiny.setFechaVigencia(source.getFechaVigencia());
         }
-        
-        if (source.getFechaUltimoCambio() != null) {
-            destiny.setFechaUltimoCambio(source.getFechaUltimoCambio());
+
+        if (source.getEstado() != null) {
+            destiny.setEstado(source.getEstado());
         }
         
         return destiny;

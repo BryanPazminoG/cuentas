@@ -15,17 +15,10 @@ public class TarjetaDTO {
     private String numero;
     private Timestamp fechaEmision;
     private Timestamp fechaVigencia;
-    private String cvv;
+    private String cvc;
     private String tipoTarjeta;
     private String redPago;
     private String estado;
-
-    @Override
-    public String toString() {
-        return "TarjetaDTO [codTarjeta=" + codTarjeta + ", codCuenta=" + codCuenta + ", numero=" + numero
-                + ", fechaEmision=" + fechaEmision + ", fechaVigencia=" + fechaVigencia + ", cvv=" + cvv
-                + ", tipoTarjeta=" + tipoTarjeta + ", redPago=" + redPago + ", estado=" + estado + "]";
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -51,4 +44,12 @@ public class TarjetaDTO {
         result = prime * result + ((codTarjeta == null) ? 0 : codTarjeta.hashCode());
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "TarjetaDTO [codTarjeta=" + codTarjeta + ", codCuenta=" + codCuenta + ", numero=" + numero
+                + ", fechaEmision=" + fechaEmision + ", fechaVigencia=" + fechaVigencia + ", cvc=" + cvc
+                + ", tipoTarjeta=" + tipoTarjeta + ", redPago=" + redPago + ", estado=" + estado + "]";
+    }
+
 }
