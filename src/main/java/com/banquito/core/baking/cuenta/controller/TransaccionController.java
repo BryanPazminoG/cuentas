@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+// import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +19,8 @@ import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@CrossOrigin(origins = { "http://localhost:4200", "http://34.173.161.134:4201", "http://34.176.205.203:4202",
-        "http://34.176.102.118:4203", "http://34.176.137.180:4204" })
+// @CrossOrigin(origins = { "http://localhost:4200", "http://34.173.161.134:4201", "http://34.176.205.203:4202",
+//         "http://34.176.102.118:4203", "http://34.176.137.180:4204" })
 // @CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET,
 // RequestMethod.POST, RequestMethod.PUT})
 @RestController

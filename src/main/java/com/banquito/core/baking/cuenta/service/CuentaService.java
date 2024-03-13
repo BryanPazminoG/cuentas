@@ -1,5 +1,6 @@
 package com.banquito.core.baking.cuenta.service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.domain.Cuenta;
 import com.banquito.core.baking.cuenta.dto.CuentaDTO;
 import com.banquito.core.baking.cuenta.dto.Builder.CuentaBuilder;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 import jakarta.transaction.Transactional;
@@ -66,15 +66,30 @@ public class CuentaService {
         try {
             Cuenta cuenta = CuentaBuilder.toCuenta(dto);
 
-            LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+            LocalDateTime fechaActualTimestamp = LocalDateTime.now();            
+            String banco = "1234567890";
+            String numeroCuenta = "";
+            while (true) {
+                numeroCuenta = "";
+                for (int x = 0; x < 10; x++) {
+                    numeroCuenta += banco.charAt((int)(Math.random()*(9-0+1)+0));
+                }
+                Optional<Cuenta> cuentaValidacion = this.cuentaRepository.findByNumeroCuenta(numeroCuenta);
+                if(!cuentaValidacion.isPresent()) break;
+            }
+            
+            cuenta.setNumeroCuenta(numeroCuenta);
+            cuenta.setSaldoContable(new BigDecimal("0"));
+            cuenta.setSaldoDisponible(new BigDecimal("0"));
             cuenta.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
             cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
             cuenta.setEstado("ACT");
             cuenta.setFechaActivacion(Timestamp.valueOf(fechaActualTimestamp));
-            cuenta.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+            cuenta.setCodUnico(new DigestUtils("MD2").digestAsHex(cuenta.toString()));
 
             CuentaDTO CuentaDTO = CuentaBuilder.toDTO(cuentaRepository.save(cuenta));
-            log.info("Se creo la cuenta: {}", cuenta);
+            log.info("La cuenta: {} se ha creado Exitosamente", CuentaDTO.getCodCuenta());
+
             return CuentaDTO;
         } catch (Exception e) {
             throw new RuntimeException("Error al crear la cuenta.", e);

@@ -52,7 +52,19 @@ public class TarjetaController {
         }
     }
 
-    @GetMapping("/cuenta/{codCuenta}")
+    @GetMapping("/credenciales/{numero}/{cvc}")
+    public ResponseEntity<TarjetaDTO> ObtenerPorNumero(@PathVariable(name = "numero") String numero, 
+    @PathVariable(name = "cvc") String cvc) {
+        try {
+            log.info("Obteniendo tarjeta: {}", numero);
+            return ResponseEntity.ok(this.tarjetaService.BuscarPorNumeroCVC(numero, cvc));
+        } catch(RuntimeException rte) {
+            log.error("Error al obtener tarjeta", rte);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/cuentas/{codCuenta}")
     public ResponseEntity<List<TarjetaDTO>> ObtenerPorCuenta(@PathVariable(name = "codCuenta") Integer codCuenta) {
         try {
             log.info("Obteniendo tarjetas por la cuenta: {}", codCuenta);

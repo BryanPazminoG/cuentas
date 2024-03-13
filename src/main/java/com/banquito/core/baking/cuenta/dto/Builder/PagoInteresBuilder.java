@@ -10,9 +10,10 @@ public class PagoInteresBuilder {
         PagoInteresDTO dto = PagoInteresDTO.builder()
         .codPagoInteres(pagoInteres.getCodPagoInteres())
         .codCuenta(pagoInteres.getCodCuenta())
-        .fechaEjecucion(pagoInteres.getFechaEjecucion())
         .capital(pagoInteres.getCapital())
+        .interesVigente(pagoInteres.getInteresVigente())
         .interesGanado(pagoInteres.getInteresGanado())
+        .fechaEjecucion(pagoInteres.getFechaEjecucion())
         .build();
         return dto;
     }
@@ -22,9 +23,10 @@ public class PagoInteresBuilder {
         PagoInteres pagoInteres = new PagoInteres();
         pagoInteres.setCodPagoInteres(dto.getCodPagoInteres());
         pagoInteres.setCodCuenta(dto.getCodCuenta());
-        pagoInteres.setFechaEjecucion(dto.getFechaEjecucion());
         pagoInteres.setCapital(dto.getCapital());
+        pagoInteres.setInteresVigente(dto.getInteresVigente());
         pagoInteres.setInteresGanado(dto.getInteresGanado());
+        pagoInteres.setFechaEjecucion(dto.getFechaEjecucion());
         return pagoInteres;
 
     }

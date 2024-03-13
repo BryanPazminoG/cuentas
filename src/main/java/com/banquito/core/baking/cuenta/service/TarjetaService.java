@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import com.banquito.core.baking.cuenta.dao.TarjetaRepository;
@@ -50,6 +51,24 @@ public class TarjetaService {
         }
     }
 
+    public TarjetaDTO BuscarPorNumeroCVC(String numero, String cvc) {
+        Optional<Tarjeta> tarjeta = this.tarjetaRepository.findByNumero(numero);
+        if (tarjeta.isPresent()) {
+            String csvHash = new DigestUtils("MD2").digestAsHex(cvc);
+            if(tarjeta.get().getCvc().equals(csvHash)){
+                log.info("La tarjeta {} encontradA EXITOSAMENTE", numero);
+                TarjetaDTO dto = TarjetaBuilder.toDTO(tarjeta.get());
+                return dto;
+            }else{
+                log.error("CVC {} incorrecto", cvc);
+                throw new RuntimeException("CVC invalido");
+            }
+        } else {
+            log.error("La tarjeta con el numero: {} no existe", numero);
+            throw new RuntimeException("No se encontro la tarjeta con el numero: " + numero);
+        }
+    }
+
     public List<TarjetaDTO> BuscarPorCuenta(Integer codCuenta) {
         List<TarjetaDTO> listDTO = new ArrayList<>();
         List<Tarjeta> listTarjeta = this.tarjetaRepository.findByCodCuentaOrderByFechaEmision(codCuenta);
@@ -67,9 +86,23 @@ public class TarjetaService {
             Tarjeta tarjeta = TarjetaBuilder.toTarjeta(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
+            String banco = "1234567890";
+            String numeroTarjeta = "";
+            while (true) {
+                numeroTarjeta = "";
+                for (int x = 0; x < 16; x++) {
+                    numeroTarjeta += banco.charAt((int)(Math.random()*(9-0+1)+0));
+                }
+                Optional<Tarjeta> tarjetaValidacion = this.tarjetaRepository.findByNumero(numeroTarjeta);
+                if(!tarjetaValidacion.isPresent()) break;
+            }
+
+            tarjeta.setNumero(numeroTarjeta);
             tarjeta.setFechaEmision(Timestamp.valueOf(fechaActualTimestamp));
             tarjeta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
             tarjeta.setEstado("ACT");
+            tarjeta.setCvc(new DigestUtils("MD2").digestAsHex(dto.getCvc()));
+
             dto =  TarjetaBuilder.toDTO(this.tarjetaRepository.save(tarjeta));
 
             log.info("La tarjeta se ha creado exitosamente: {}", dto);

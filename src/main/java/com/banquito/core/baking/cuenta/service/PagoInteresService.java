@@ -99,35 +99,36 @@ public class PagoInteresService {
             pagoInteres = this.pagoInteresRepository.save(pagoInteres);
 
             log.info("interes ganado creado Exitosamente: {} ", pagoInteres.getCodPagoInteres());
+            if (interesGanado.compareTo(BigDecimal.ZERO) > 0) {
+                log.info("Iniciando el proceso de deposito en la cuenta: {}", cuenta.getCodCuenta());
 
-            log.info("Iniciando el proceso de deposito en la cuenta: {}", cuenta.getCodCuenta());
+                Transaccion transaccion = new Transaccion();
+                transaccion.setCodCuenta(cuenta.getCodCuenta());
+                transaccion.setTipoAfectacion("D");
+                transaccion.setValorDebe(interesGanado);
+                transaccion.setValorHaber(interesGanado);
+                transaccion.setTipoTransaccion("DEP");
+                transaccion.setDetalle("Interes Ganado " + Timestamp.valueOf(fechaActualTimestamp));
+                transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
+                transaccion.setEstado("EXI");
+                transaccion.setFechaAfectacion(Timestamp.valueOf(fechaActualTimestamp));
+                transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-            Transaccion transaccion = new Transaccion();
-            transaccion.setCodCuenta(cuenta.getCodCuenta());
-            transaccion.setTipoAfectacion("D");
-            transaccion.setValorDebe(interesGanado);
-            transaccion.setValorHaber(interesGanado);
-            transaccion.setTipoTransaccion("DEP");
-            transaccion.setDetalle("Interes Ganado " + Timestamp.valueOf(fechaActualTimestamp));
-            transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
-            transaccion.setEstado("EXI");
-            transaccion.setFechaAfectacion(Timestamp.valueOf(fechaActualTimestamp));
-            transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                transaccion.setCodUnico(new DigestUtils("MD2").digestAsHex(transaccion.toString()));
 
-            transaccion.setCodUnico(new DigestUtils("MD2").digestAsHex(transaccion.toString()));
+                transaccion = transaccionRepository.save(transaccion);
 
-            transaccion = transaccionRepository.save(transaccion);
+                log.info("Deposito realizado con exito: {}", transaccion.getCodTransaccion());
 
-            log.info("Deposito realizado con exito: {}", transaccion.getCodTransaccion());
+                log.info("Actualizando saldo de la cuenta: {}", cuenta.getCodCuenta());
+                cuenta.setSaldoContable(cuenta.getSaldoContable().add(interesGanado));
+                cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(interesGanado));
+                cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-            log.info("Actualizando saldo de la cuenta: {}", cuenta.getCodCuenta());
-            cuenta.setSaldoContable(cuenta.getSaldoContable().add(interesGanado));
-            cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(interesGanado));
-            cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                cuenta = this.cuentaRepository.save(cuenta);
 
-            cuenta = this.cuentaRepository.save(cuenta);
-            
-            log.info("Actualizacion de saldo realizado con exito: {}", cuenta.getCodCuenta());
+                log.info("Actualizacion de saldo realizado con exito: {}", cuenta.getCodCuenta());
+            }
         }
     }
 }

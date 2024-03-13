@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -22,7 +20,6 @@ import lombok.Setter;
 @Table(name = "TIPO_CUENTA")
 public class TipoCuenta {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COD_TIPO_CUENTA", nullable = false, length = 10)
     private String codTipoCuenta;
 
@@ -41,7 +38,7 @@ public class TipoCuenta {
     @Column(name = "FORMA_CAPITALIZACION", nullable = false, length = 3)
     private String formaCapitalizacion;
 
-    @Column(name = "MAXIMO_NUMERO_INTERVINIENTES", nullable = false, length = 2)
+    @Column(name = "MAXIMO_NUMERO_INTERVINIENTES", nullable = false)
     private Integer maximoNumeroIntervinientes;
 
     @Column(name = "FECHA_CREACION", nullable = false)
