@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.baking.cuenta.dto.TransaccionDTO;
 import com.banquito.core.baking.cuenta.service.TransaccionService;
 import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @CrossOrigin(origins = { "http://localhost:4200"})
 // @CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET,
 // RequestMethod.POST, RequestMethod.PUT})
@@ -38,7 +39,7 @@ public class TransaccionController {
         try {
             return ResponseEntity.ok(this.transaccionService.buscarPorId(id));
         } catch (RuntimeException rte) {
-            log.error("Error al obtener la transacción: {}", rte);
+            log.error("Error al obtener la transacción: {}", id);
             return ResponseEntity.notFound().build();
         }
     }
@@ -50,7 +51,7 @@ public class TransaccionController {
             this.transaccionService.crear(transaccion);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException rte) {
-            log.error("Error al generar la transaccion: {}", rte);
+            log.error("Error al generar la transaccion: {}", transaccion);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -63,7 +64,7 @@ public class TransaccionController {
             List<TransaccionDTO> transacciones = this.transaccionService.buscarPorCodigoCuenta(codCuenta);
             return ResponseEntity.ok(transacciones);
         } catch (CreacionException e) {
-            log.error("Error al obtener transacciones", e);
+            log.error("Error al obtener transacciones");
             return ResponseEntity.notFound().build();
         }
     }
@@ -75,19 +76,19 @@ public class TransaccionController {
             this.transaccionService.depositar(transaccion);
             return ResponseEntity.noContent().build();
         } catch (CreacionException e) {
-            log.error("Error al realizar el deposito", e);
+            log.error("Error al realizar el deposito");
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PostMapping("/transferencias")
-    public ResponseEntity<Void> transferir(@RequestBody TransaccionDTO transaccion, @RequestBody BigDecimal monto) {
+    public ResponseEntity<Void> transferir(@RequestBody TransaccionDTO transaccion, @RequestParam("monto") BigDecimal monto) {
         log.info("Recibida solicitud para realizar una transferencia. Detalles de la transacción: {}", transaccion);
         try {
             this.transaccionService.transferir(transaccion, monto);
             return ResponseEntity.noContent().build();
         } catch (CreacionException e) {
-            log.error("Error al realizar la transferencia", e);
+            log.error("Error al realizar la transferencia");
             return ResponseEntity.badRequest().build();
         }
     }
@@ -99,7 +100,7 @@ public class TransaccionController {
             this.transaccionService.retirar(transaccion);
             return ResponseEntity.noContent().build();
         } catch (CreacionException e) {
-            log.error("Error al realizar el retiro", e);
+            log.error("Error al realizar el retiro");
             return ResponseEntity.badRequest().build();
         }
     }

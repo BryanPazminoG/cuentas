@@ -19,10 +19,10 @@ import com.banquito.core.baking.cuenta.dto.Builder.TransaccionBuilder;
 import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Service
-@Slf4j
 public class TransaccionService {
     private final TransaccionRepository transaccionRepository;
     private final CuentaRepository cuentaRepository;
@@ -39,6 +39,7 @@ public class TransaccionService {
             log.info("Transaccion obtenida: {}", optTransaccion.get());
             return TransaccionBuilder.toDTO(optTransaccion.get());
         } else {
+            log.error("No se encontró transacción: {}", codTransaccion);
             throw new RuntimeException("No se encontro la transaccion ID: " + codTransaccion);
         }
     }
@@ -70,28 +71,35 @@ public class TransaccionService {
             Optional<Cuenta> optCuenta = this.cuentaRepository.findById(dto.getCodCuenta());
             if (optCuenta.isPresent()) {
                 Cuenta cuenta = optCuenta.get();
-                if (cuenta.getSaldoDisponible().compareTo(dto.getValorDebe()) > 0) {
-                    LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                if ("ACT".equals(cuenta.getEstado())) {
+                    if (cuenta.getSaldoDisponible().compareTo(dto.getValorDebe()) > 0) {
+                        LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                    cuenta.setSaldoContable(cuenta.getSaldoContable().add(dto.getValorDebe()));
-                    cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(dto.getValorDebe()));
-                    cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                        cuenta.setSaldoContable(cuenta.getSaldoContable().add(dto.getValorDebe()));
+                        cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(dto.getValorDebe()));
+                        cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-                    dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
-                    dto.setTipoAfectacion("D");
-                    dto.setValorHaber(BigDecimal.ZERO);
-                    dto.setTipoTransaccion("DEP");
-                    dto.setDetalle("DEPOSITO BANCARIO");
-                    dto.setEstado("EXI");
+                        dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+                        dto.setTipoAfectacion("D");
+                        dto.setValorHaber(BigDecimal.ZERO);
+                        dto.setTipoTransaccion("DEP");
+                        dto.setDetalle("DEPOSITO BANCARIO");
+                        dto.setEstado("EXI");
 
-                    this.cuentaRepository.save(cuenta);
-                    this.crear(dto);
-                    log.info("Deposito realizado con exito");
+                        this.cuentaRepository.save(cuenta);
+                        this.crear(dto);
+                        log.info("Deposito realizado con exito");
+                    } else {
+                        log.error("No posee fondos suficientes.");
+                        throw new RuntimeException("Fondos insuficientes");
+                    }
                 } else {
-                    log.error("Cuenta: " + cuenta.getNumeroCuenta() + " no posee fondos suficientes.");
+                    log.error("La cuenta {} no se encuentra ACTIVA", cuenta.getNumeroCuenta());
+                    throw new RuntimeException("La cuenta no esta ACTIVA: " + cuenta.getNumeroCuenta());
                 }
             } else {
-                log.error("No existe la cuenta: " + dto.getCodCuenta());
+                log.error("No existe la cuenta: {}", dto.getCodCuenta());
+                throw new RuntimeException("No se encontro la cuenta: " + dto.getCodCuenta());
             }
         } catch (Exception e) {
             throw new CreacionException("Error en creacion de la transaccion:" + dto + ". Error: " + e, e);
@@ -106,28 +114,35 @@ public class TransaccionService {
             Optional<Cuenta> optCuenta = this.cuentaRepository.findById(dto.getCodCuenta());
             if (optCuenta.isPresent()) {
                 Cuenta cuenta = optCuenta.get();
-                if (cuenta.getSaldoDisponible().compareTo(dto.getValorHaber()) > 0) {
-                    LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                if ("ACT".equals(cuenta.getEstado())) {
+                    if (cuenta.getSaldoDisponible().compareTo(dto.getValorHaber()) > 0) {
+                        LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                    cuenta.setSaldoContable(cuenta.getSaldoContable().subtract(dto.getValorHaber()));
-                    cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().subtract(dto.getValorHaber()));
-                    cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                        cuenta.setSaldoContable(cuenta.getSaldoContable().subtract(dto.getValorHaber()));
+                        cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().subtract(dto.getValorHaber()));
+                        cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-                    dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
-                    dto.setTipoAfectacion("C");
-                    dto.setValorDebe(BigDecimal.ZERO);
-                    dto.setTipoTransaccion("RET");
-                    dto.setDetalle("RETIRO");
-                    dto.setEstado("EXI");
+                        dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+                        dto.setTipoAfectacion("C");
+                        dto.setValorDebe(BigDecimal.ZERO);
+                        dto.setTipoTransaccion("RET");
+                        dto.setDetalle("RETIRO");
+                        dto.setEstado("EXI");
 
-                    this.cuentaRepository.save(cuenta);
-                    this.crear(dto);
-                    log.info("Retiro realizado con exito.");
+                        this.cuentaRepository.save(cuenta);
+                        this.crear(dto);
+                        log.info("Retiro realizado con exito.");
+                    } else {
+                        log.error("No posee fondos suficientes.");
+                        throw new RuntimeException("Fondos insuficientes");
+                    }
                 } else {
-                    log.error("Cuenta: " + cuenta.getNumeroCuenta() + " no posee fondos suficientes.");
+                    log.error("La cuenta {} no se encuentra ACTIVA", cuenta.getNumeroCuenta());
+                    throw new RuntimeException("La cuenta no esta ACTIVA: " + cuenta.getNumeroCuenta());
                 }
             } else {
-                log.error("No existe la cuenta: " + dto.getCodCuenta());
+                log.error("No existe la cuenta: {}", dto.getCodCuenta());
+                throw new RuntimeException("No se encontro la cuenta: " + dto.getCodCuenta());
             }
         } catch (Exception e) {
             throw new CreacionException("Error en creacion de la transaccion: " + dto + ". Error: " + e, e);
@@ -141,39 +156,45 @@ public class TransaccionService {
             Optional<Cuenta> optCuenta = this.cuentaRepository.findById(dto.getCodCuenta());
             if (optCuenta.isPresent()) {
                 Cuenta cuenta = optCuenta.get();
+                if ("ACT".equals(cuenta.getEstado())) {
+                    if (cuenta.getSaldoDisponible().compareTo(monto) >= 0) {
+                        LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                if (cuenta.getSaldoDisponible().compareTo(monto) >= 0) {
-                    LocalDateTime fechaActualTimestamp = LocalDateTime.now();
+                        dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+                        dto.setEstado("EXI");
+                        dto.setCanal("BWE");
+                        dto.setTipoTransaccion("TRA");
 
-                    dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
-                    dto.setEstado("EXI");
-                    dto.setCanal("BWE");
-                    dto.setTipoTransaccion("TRA");
+                        if ("D".equals(dto.getTipoAfectacion())) {
+                            cuenta.setSaldoContable(cuenta.getSaldoContable().subtract(monto));
+                            cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().subtract(monto));
+                            cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                            dto.setValorDebe(BigDecimal.ZERO);
+                            dto.setValorHaber(monto);
+                        } else {
+                            cuenta.setSaldoContable(cuenta.getSaldoContable().add(monto));
+                            cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(monto));
+                            cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                            dto.setValorDebe(monto);
+                            dto.setValorHaber(BigDecimal.ZERO);
+                        }
 
-                    if ("D".equals(dto.getTipoAfectacion())) {
-                        cuenta.setSaldoContable(cuenta.getSaldoContable().subtract(monto));
-                        cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().subtract(monto));
-                        cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                        dto.setValorDebe(BigDecimal.ZERO);
-                        dto.setValorHaber(monto);
+                        this.cuentaRepository.save(cuenta);
+                        this.crear(dto);
+
+                        log.info("Transferencia realizada con exito. Cuenta: {}, Monto: {}",
+                                cuenta.getNumeroCuenta(), monto);
                     } else {
-                        cuenta.setSaldoContable(cuenta.getSaldoContable().add(monto));
-                        cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(monto));
-                        cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
-                        dto.setValorDebe(monto);
-                        dto.setValorHaber(BigDecimal.ZERO);
+                        log.error("Saldo insuficiente en Cuenta: {}", cuenta.getNumeroCuenta());
+                        throw new RuntimeException("El saldo es insuficiente en cuenta: " + cuenta.getNumeroCuenta());
                     }
-
-                    this.cuentaRepository.save(cuenta);
-                    this.crear(dto);
-
-                    log.info("Transferencia realizada con exito. Cuenta: {}, Monto: {}",
-                            cuenta.getNumeroCuenta(), monto);
                 } else {
-                    log.error("Saldo insuficiente en Cuenta: " + cuenta.getNumeroCuenta());
+                    log.error("La cuenta {} no se encuentra ACTIVA", cuenta.getNumeroCuenta());
+                    throw new RuntimeException("La cuenta no esta ACTIVA: " + cuenta.getNumeroCuenta());
                 }
             } else {
-                log.error("No existe la cuenta: " + dto.getCodCuenta());
+                log.error("No existe la cuenta: {}", dto.getCodCuenta());
+                throw new RuntimeException("No se encontro la cuenta: " + dto.getCodCuenta());
             }
         } catch (Exception e) {
             throw new CreacionException("Error en creacion de la transaccion: " + dto + ", Error: " + e, e);
@@ -183,8 +204,12 @@ public class TransaccionService {
     public List<TransaccionDTO> buscarPorCodigoCuenta(Integer codCuenta) {
         log.info("Buscando transacciones por codigo de cuenta: {}", codCuenta);
         List<TransaccionDTO> dtos = new ArrayList<>();
-        for (Transaccion transaccion : this.transaccionRepository.findByCodCuenta(codCuenta)) {
-            dtos.add(TransaccionBuilder.toDTO(transaccion));
+        if(!this.transaccionRepository.findByCodCuenta(codCuenta).isEmpty()) {
+            for (Transaccion transaccion : this.transaccionRepository.findByCodCuenta(codCuenta)) {
+                dtos.add(TransaccionBuilder.toDTO(transaccion));
+            }            
+        } else {
+            log.error("No existen transacciones en la cuenta: {}", codCuenta);
         }
         return dtos;
     }

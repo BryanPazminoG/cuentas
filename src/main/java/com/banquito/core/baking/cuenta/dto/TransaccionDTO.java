@@ -20,14 +20,6 @@ public class TransaccionDTO {
     private String estado;
 
     @Override
-    public String toString() {
-        return "TransaccionDTO [codTransaccion=" + codTransaccion + ", codCuenta=" + codCuenta + ", codUnico="
-                + codUnico + ", tipoAfectacion=" + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber="
-                + valorHaber + ", tipoTransaccion=" + tipoTransaccion + ", canal=" + canal + ", detalle=" + detalle
-                + ", estado=" + estado + "]";
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -52,4 +44,11 @@ public class TransaccionDTO {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "TransaccionDTO [codTransaccion=" + codTransaccion + ", codCuenta=" + codCuenta + ", codUnico="
+                + codUnico + ", tipoAfectacion=" + tipoAfectacion + ", valorDebe=" + valorDebe + ", valorHaber="
+                + valorHaber + ", tipoTransaccion=" + tipoTransaccion + ", canal=" + canal + ", detalle=" + detalle
+                + ", estado=" + estado + "]";
+    }
 }

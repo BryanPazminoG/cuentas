@@ -14,9 +14,9 @@ import com.banquito.core.baking.cuenta.dto.TipoCuentaDTO;
 import com.banquito.core.baking.cuenta.dto.Builder.TipoCuentaBuilder;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @Service
 public class TipoCuentaService {
     private final TipoCuentaRepository tipoCuentaRepository;

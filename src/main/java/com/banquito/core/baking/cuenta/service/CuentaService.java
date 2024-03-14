@@ -6,17 +6,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
+
 import com.banquito.core.baking.cuenta.dao.CuentaRepository;
 import com.banquito.core.baking.cuenta.domain.Cuenta;
 import com.banquito.core.baking.cuenta.dto.CuentaDTO;
 import com.banquito.core.baking.cuenta.dto.Builder.CuentaBuilder;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @Service
 public class CuentaService {
     private final CuentaRepository cuentaRepository;

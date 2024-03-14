@@ -16,9 +16,9 @@ import com.banquito.core.baking.cuenta.dto.Builder.TarjetaBuilder;
 import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @Service
 public class TarjetaService {
     private final TarjetaRepository tarjetaRepository;

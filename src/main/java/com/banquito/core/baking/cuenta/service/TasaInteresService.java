@@ -2,11 +2,12 @@ package com.banquito.core.baking.cuenta.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+
 import com.banquito.core.baking.cuenta.dao.TasaInteresRepository;
 import com.banquito.core.baking.cuenta.domain.TasaInteres;
 import com.banquito.core.baking.cuenta.dto.TasaInteresDTO;
@@ -14,10 +15,10 @@ import com.banquito.core.baking.cuenta.dto.Builder.TasaInteresBuilder;
 import com.banquito.core.baking.cuenta.service.exeption.CreacionException;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Service
-@Slf4j
 public class TasaInteresService {
 
     private final TasaInteresRepository tasaInteresRepository;

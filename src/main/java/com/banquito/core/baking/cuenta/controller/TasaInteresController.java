@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.banquito.core.baking.cuenta.dto.TasaInteresDTO;
 import com.banquito.core.baking.cuenta.service.TasaInteresService;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @CrossOrigin(origins = {"http://localhost:4200"})
 
 @RestController

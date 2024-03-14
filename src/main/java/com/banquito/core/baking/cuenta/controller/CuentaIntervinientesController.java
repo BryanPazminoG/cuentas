@@ -1,5 +1,7 @@
 package com.banquito.core.baking.cuenta.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,11 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
 import com.banquito.core.baking.cuenta.service.CuentaIntervinientesService;
-import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @CrossOrigin(origins = { "http://localhost:4200"})
 // @CrossOrigin(origins = { "http://localhost:4200",
 // "http://34.173.161.134:4201", "http://34.176.205.203:4202",
