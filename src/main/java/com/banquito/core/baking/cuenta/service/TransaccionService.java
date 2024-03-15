@@ -45,19 +45,18 @@ public class TransaccionService {
     }
 
     @Transactional
-    public TransaccionDTO crear(TransaccionDTO dto) {
+    public void crear(TransaccionDTO dto) {
         try {
             Transaccion transaccion = TransaccionBuilder.toTransaccion(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
-
-            transaccion.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
+            
             transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
             transaccion.setFechaAfectacion(Timestamp.valueOf(fechaActualTimestamp));
             transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+            transaccion.setCodUnico(new DigestUtils("MD2").digestAsHex(transaccion.toString()));
 
-            dto = TransaccionBuilder.toDTO(this.transaccionRepository.save(transaccion));
+            this.transaccionRepository.save(transaccion);
             log.info("Se creo la transaccion: {}", transaccion);
-            return dto;
         } catch (Exception e) {
             throw new CreacionException("Error al crear la transaccion: ", e);
         }
@@ -79,7 +78,6 @@ public class TransaccionService {
                         cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(dto.getValorDebe()));
                         cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-                        dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
                         dto.setTipoAfectacion("C");
                         dto.setValorHaber(BigDecimal.ZERO);
                         dto.setTipoTransaccion("DEP");
@@ -122,7 +120,6 @@ public class TransaccionService {
                         cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().subtract(dto.getValorHaber()));
                         cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-                        dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
                         dto.setTipoAfectacion("D");
                         dto.setValorDebe(BigDecimal.ZERO);
                         dto.setTipoTransaccion("RET");
@@ -160,7 +157,6 @@ public class TransaccionService {
                     if (cuenta.getSaldoDisponible().compareTo(monto) >= 0) {
                         LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                        dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
                         dto.setEstado("EXI");
                         dto.setCanal("BWE");
                         dto.setTipoTransaccion("TRA");
