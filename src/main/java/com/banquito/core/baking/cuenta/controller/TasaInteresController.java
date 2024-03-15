@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 @CrossOrigin(origins = { "http://localhost:4200" })
 
 @RestController
-@RequestMapping("/api/v1/tasasInteres")
+@RequestMapping("/api/v1/tasaInteres")
 public class TasaInteresController {
 
     private final TasaInteresService tasaInteresService;
