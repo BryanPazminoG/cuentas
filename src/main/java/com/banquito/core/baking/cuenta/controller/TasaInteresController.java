@@ -42,8 +42,8 @@ public class TasaInteresController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<TasaInteresDTO>> ObtenerPorEstado(@RequestParam(name = "estado") String estado) {
+    @GetMapping("/estados/{estado}")
+    public ResponseEntity<List<TasaInteresDTO>> ObtenerPorEstado(@PathVariable(name = "estado") String estado) {
         try {
             log.info("Obteniendo tasa interes con el estado: {}", estado);
             return ResponseEntity.ok(this.tasaInteresService.ListarPorEstado(estado));

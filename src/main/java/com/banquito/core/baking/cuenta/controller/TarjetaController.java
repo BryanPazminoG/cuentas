@@ -52,8 +52,8 @@ public class TarjetaController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<TarjetaDTO> ObtenerPorNumero(@RequestParam(name = "numero") String numero, 
+    @GetMapping("/credenciales")
+    public ResponseEntity<TarjetaDTO> ObtenerPorCredenciales(@RequestParam(name = "numero") String numero, 
     @RequestParam(name = "cvc") String cvc) {
         try {
             log.info("Obteniendo tarjeta: {}", numero);
