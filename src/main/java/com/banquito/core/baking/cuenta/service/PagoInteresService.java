@@ -75,7 +75,7 @@ public class PagoInteresService {
     }
 
     @Async
-    @Scheduled(cron = "0 30 20 * * MON-SUN")
+    @Scheduled(cron = "0 0 20 * * MON-SUN")
     public void GenerarInteres() {
         for (Cuenta cuenta : this.cuentaRepository.findByEstadoOrderByFechaCreacion("ACT")) {
 
