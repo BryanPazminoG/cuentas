@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.baking.cuenta.dto.TipoCuentaDTO;
@@ -41,8 +42,8 @@ public class TipoCuentaController {
         }
     }
 
-    @GetMapping("/estados/{estado}")
-    public ResponseEntity<List<TipoCuentaDTO>> ObtenerPorEstado(@PathVariable(name = "estado") String estado) {
+    @GetMapping
+    public ResponseEntity<List<TipoCuentaDTO>> ObtenerPorEstado(@RequestParam(name = "estado") String estado) {
         try {
             log.info("Obteniendo tipo cuenta por el estado: {}", estado);
             return ResponseEntity.ok(this.tipoCuentaService.ListarPorEstado(estado));

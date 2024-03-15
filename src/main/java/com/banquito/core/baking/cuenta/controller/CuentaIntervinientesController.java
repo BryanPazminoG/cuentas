@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
@@ -35,7 +36,7 @@ public class CuentaIntervinientesController {
         this.cuentaIntervinientesService = cuentaIntervinientesService;
     }
 
-    @GetMapping("/{codCuenta}/{codCliente}")
+    @GetMapping("/cuentas/{codCuenta}/clientes/{codCliente}")
     public ResponseEntity<CuentaIntervinientesDTO> ObtenerPorId(@PathVariable("codCuenta") Integer codCuenta,
             @PathVariable("codCliente") String codCliente) {
         try {
@@ -74,9 +75,9 @@ public class CuentaIntervinientesController {
         }
     }
 
-    @GetMapping("/estados/{estado}")
+    @GetMapping
     public ResponseEntity<List<CuentaIntervinientesDTO>> ListarPorEstado(
-            @PathVariable("estado") String estado) {
+            @RequestParam("estado") String estado) {
         try {
             log.info("Buscando cuentas intervenientes por el estado: {}", estado);
             List<CuentaIntervinientesDTO> dto = this.cuentaIntervinientesService.ListarPorEstado(estado);
@@ -110,7 +111,7 @@ public class CuentaIntervinientesController {
         }
     }
 
-    @DeleteMapping("/{codCuenta}/{codCliente}")
+    @DeleteMapping("/cuentas/{codCuenta}/clientes/{codCliente}")
     public ResponseEntity<Void> Eliminar(@PathVariable("codCuenta") Integer codCuenta, @PathVariable("codCliente") String codCliente) {
         try {
             log.info("Eliminando la cuenta interviniente con ID de cuenta: {} y ID de cliente: {}", codCuenta, codCliente);

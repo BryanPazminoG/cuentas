@@ -80,7 +80,7 @@ public class TransaccionService {
                         cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
                         dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
-                        dto.setTipoAfectacion("D");
+                        dto.setTipoAfectacion("C");
                         dto.setValorHaber(BigDecimal.ZERO);
                         dto.setTipoTransaccion("DEP");
                         dto.setDetalle("DEPOSITO BANCARIO");
@@ -123,7 +123,7 @@ public class TransaccionService {
                         cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
                         dto.setCodUnico(new DigestUtils("MD2").digestAsHex(dto.toString()));
-                        dto.setTipoAfectacion("C");
+                        dto.setTipoAfectacion("D");
                         dto.setValorDebe(BigDecimal.ZERO);
                         dto.setTipoTransaccion("RET");
                         dto.setDetalle("RETIRO");

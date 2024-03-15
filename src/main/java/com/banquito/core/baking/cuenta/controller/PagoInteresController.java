@@ -26,7 +26,7 @@ public class PagoInteresController {
         this.pagoInteresService = pagoInteresService;
     }
 
-    @GetMapping("{codPagoInteres}")
+    @GetMapping("/{codPagoInteres}")
     public ResponseEntity<PagoInteresDTO> ObtenerPorId(@PathVariable(name = "codPagoInteres") Integer codPagoInteres) {
         try {
             log.info("Obteniendo pagos de interes por ID: {}", codPagoInteres);
