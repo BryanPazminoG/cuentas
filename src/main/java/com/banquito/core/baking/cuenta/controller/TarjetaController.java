@@ -41,8 +41,8 @@ public class TarjetaController {
         }
     }
 
-    @GetMapping("/numero/{numero}")
-    public ResponseEntity<TarjetaDTO> ObtenerPorNumero(@PathVariable(name = "numero") String numero) {
+    @GetMapping("/")
+    public ResponseEntity<TarjetaDTO> ObtenerPorNumero(@RequestParam(name = "numero") String numero) {
         try {
             log.info("Obteniendo tarjeta por el numero: {}", numero);
             return ResponseEntity.ok(this.tarjetaService.BuscarPorNumero(numero));
@@ -52,9 +52,9 @@ public class TarjetaController {
         }
     }
 
-    @GetMapping("/credenciales/{numero}/{cvc}")
-    public ResponseEntity<TarjetaDTO> ObtenerPorNumero(@PathVariable(name = "numero") String numero, 
-    @PathVariable(name = "cvc") String cvc) {
+    @GetMapping("/credenciales")
+    public ResponseEntity<TarjetaDTO> ObtenerPorNumero(@RequestParam(name = "numero") String numero, 
+    @RequestParam(name = "cvc") String cvc) {
         try {
             log.info("Obteniendo tarjeta: {}", numero);
             return ResponseEntity.ok(this.tarjetaService.BuscarPorNumeroCVC(numero, cvc));
