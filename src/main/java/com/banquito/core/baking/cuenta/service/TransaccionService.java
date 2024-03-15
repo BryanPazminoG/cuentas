@@ -49,7 +49,7 @@ public class TransaccionService {
         try {
             Transaccion transaccion = TransaccionBuilder.toTransaccion(dto);
             LocalDateTime fechaActualTimestamp = LocalDateTime.now();
-            
+
             transaccion.setFechaCreacion(Timestamp.valueOf(fechaActualTimestamp));
             transaccion.setFechaAfectacion(Timestamp.valueOf(fechaActualTimestamp));
             transaccion.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
@@ -71,26 +71,23 @@ public class TransaccionService {
             if (optCuenta.isPresent()) {
                 Cuenta cuenta = optCuenta.get();
                 if ("ACT".equals(cuenta.getEstado())) {
-                    if (cuenta.getSaldoDisponible().compareTo(dto.getValorDebe()) > 0) {
-                        LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                        cuenta.setSaldoContable(cuenta.getSaldoContable().add(dto.getValorDebe()));
-                        cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(dto.getValorDebe()));
-                        cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
+                    LocalDateTime fechaActualTimestamp = LocalDateTime.now();
 
-                        dto.setTipoAfectacion("C");
-                        dto.setValorHaber(BigDecimal.ZERO);
-                        dto.setTipoTransaccion("DEP");
-                        dto.setDetalle("DEPOSITO BANCARIO");
-                        dto.setEstado("EXI");
+                    cuenta.setSaldoContable(cuenta.getSaldoContable().add(dto.getValorDebe()));
+                    cuenta.setSaldoDisponible(cuenta.getSaldoDisponible().add(dto.getValorDebe()));
+                    cuenta.setFechaUltimoCambio(Timestamp.valueOf(fechaActualTimestamp));
 
-                        this.cuentaRepository.save(cuenta);
-                        this.crear(dto);
-                        log.info("Deposito realizado con exito");
-                    } else {
-                        log.error("No posee fondos suficientes.");
-                        throw new RuntimeException("Fondos insuficientes");
-                    }
+                    dto.setTipoAfectacion("C");
+                    dto.setValorHaber(BigDecimal.ZERO);
+                    dto.setTipoTransaccion("DEP");
+                    dto.setDetalle("DEPOSITO BANCARIO");
+                    dto.setEstado("EXI");
+
+                    this.cuentaRepository.save(cuenta);
+                    this.crear(dto);
+                    log.info("Deposito realizado con exito");
+
                 } else {
                     log.error("La cuenta {} no se encuentra ACTIVA", cuenta.getNumeroCuenta());
                     throw new RuntimeException("La cuenta no esta ACTIVA: " + cuenta.getNumeroCuenta());
@@ -200,10 +197,10 @@ public class TransaccionService {
     public List<TransaccionDTO> buscarPorCodigoCuenta(Integer codCuenta) {
         log.info("Buscando transacciones por codigo de cuenta: {}", codCuenta);
         List<TransaccionDTO> dtos = new ArrayList<>();
-        if(!this.transaccionRepository.findByCodCuenta(codCuenta).isEmpty()) {
+        if (!this.transaccionRepository.findByCodCuenta(codCuenta).isEmpty()) {
             for (Transaccion transaccion : this.transaccionRepository.findByCodCuenta(codCuenta)) {
                 dtos.add(TransaccionBuilder.toDTO(transaccion));
-            }            
+            }
         } else {
             log.error("No existen transacciones en la cuenta: {}", codCuenta);
         }
