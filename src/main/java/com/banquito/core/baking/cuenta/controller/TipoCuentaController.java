@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 @CrossOrigin(origins = {"http://localhost:4200"})
 //@CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 @RestController
-@RequestMapping("/api/v1/tiposCuentas")
+@RequestMapping("/api/v1/tipoCuentas")
 public class TipoCuentaController {
     
     private final TipoCuentaService tipoCuentaService;
