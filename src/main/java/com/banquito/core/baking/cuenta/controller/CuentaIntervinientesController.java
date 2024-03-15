@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.baking.cuenta.dto.CuentaIntervinientesDTO;
@@ -75,9 +74,9 @@ public class CuentaIntervinientesController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/estados/{estado}")
     public ResponseEntity<List<CuentaIntervinientesDTO>> ListarPorEstado(
-            @RequestParam("estado") String estado) {
+            @PathVariable("estado") String estado) {
         try {
             log.info("Buscando cuentas intervenientes por el estado: {}", estado);
             List<CuentaIntervinientesDTO> dto = this.cuentaIntervinientesService.ListarPorEstado(estado);

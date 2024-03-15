@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.baking.cuenta.dto.CuentaDTO;
@@ -41,8 +40,8 @@ public class CuentaController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<CuentaDTO> BuscarPorNumeroCuenta(@RequestParam(name = "numeroCuenta") String numeroCuenta) {
+    @GetMapping("/numeroCuenta/{numeroCuenta}")
+    public ResponseEntity<CuentaDTO> BuscarPorNumeroCuenta(@PathVariable(name = "numeroCuenta") String numeroCuenta) {
         try {
             log.info("Obteniendo cuenta por el numero de cuenta: {}", numeroCuenta);
             return ResponseEntity.ok(this.cuentaService.BuscarPorNumeroCuenta(numeroCuenta));

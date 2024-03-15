@@ -19,7 +19,7 @@ import com.banquito.core.baking.cuenta.service.TasaInteresService;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = {"http://localhost:4200"})
 
 @RestController
 @RequestMapping("/api/v1/tasaInteres")
@@ -76,12 +76,11 @@ public class TasaInteresController {
     }
 
     @PatchMapping
-    public ResponseEntity<TasaInteresDTO> CambiarEstado(@RequestParam("codTasaInteres") Integer codTasaInteres,
-            @RequestParam("estado") String estado) {
+    public ResponseEntity<TasaInteresDTO> CambiarEstado(@RequestParam("codTasaInteres") Integer codTasaInteres, @RequestParam("estado") String estado) {
         try {
             log.info("Actualizando el estado de la tasa interes: {} a {}", codTasaInteres, estado);
             return ResponseEntity.ok(this.tasaInteresService.CambiarEstado(codTasaInteres, estado));
-        } catch (RuntimeException rte) {
+        } catch(RuntimeException rte) {
             log.error("Error al cambiar el estado de la tasa interes", rte);
             return ResponseEntity.badRequest().build();
         }
