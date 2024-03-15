@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
 // @CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET,
 // RequestMethod.POST, RequestMethod.PUT})
 @RestController
-@RequestMapping("/api/v1/cuentaintervinientes")
+@RequestMapping("/api/v1/cuentasintervinientes")
 public class CuentaIntervinientesController {
     private final CuentaIntervinientesService cuentaIntervinientesService;
 
